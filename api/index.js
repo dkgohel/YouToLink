@@ -51,7 +51,9 @@ module.exports = async (req, res) => {
         return res.status(500).json({ error: 'Database error' });
       }
 
-      const baseUrl = `https://${req.headers.host}`;
+      const baseUrl = req.headers.host.includes('localhost') ? 
+        `http://${req.headers.host}` : 
+        'https://u2l.in';
       res.json({ shortUrl: `${baseUrl}/${shortCode}` });
     }
     else if (method === 'GET' && urlPath.startsWith('/api/')) {

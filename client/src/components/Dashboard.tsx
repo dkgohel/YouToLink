@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../supabase';
 
@@ -12,14 +12,14 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editValue, setEditValue] = useState('');
 
-  const getAuthHeaders = (): Record<string, string> => ({
+  const getAuthHeaders = useCallback((): Record<string, string> => ({
     'Authorization': `Bearer ${user.access_token}`,
     'x-user-id': user.id
-  });
+  }), [user]);
 
-  const fetchUrls = async () => {
+  const fetchUrls = useCallback(async () => {
     try {
-      const response = await fetch('http://localhost:5001/api/my-urls', {
+      const response = await fetch('/api/my-urls', {
         headers: getAuthHeaders()
       });
       const data = await response.json();
@@ -30,11 +30,11 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
       console.error('Error fetching URLs:', error);
     }
     setLoading(false);
-  };
+  }, [getAuthHeaders]);
 
   useEffect(() => {
     fetchUrls();
-  }, []);
+  }, [fetchUrls]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -47,7 +47,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
 
   const handleSaveEdit = async (id: number) => {
     try {
-      const response = await fetch(`http://localhost:5001/api/urls/${id}`, {
+      const response = await fetch(`/api/urls/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
     if (!window.confirm('Are you sure you want to delete this URL?')) return;
 
     try {
-      const response = await fetch(`http://localhost:5001/api/urls/${id}`, {
+      const response = await fetch(`/api/urls/${id}`, {
         method: 'DELETE',
         headers: getAuthHeaders()
       });

@@ -40,7 +40,7 @@ const Home: React.FC<HomeProps> = ({ user }) => {
         ? { longUrl, customCode: customCode || undefined }
         : { urls: bulkUrls.split('\n').filter(url => url.trim()) };
 
-      const response = await fetch('http://localhost:5001/api/shorten', {
+      const response = await fetch('/api/shorten', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ const Home: React.FC<HomeProps> = ({ user }) => {
         
         // Generate QR code
         const shortCode = data.shortUrl.split('/').pop();
-        const qrResponse = await fetch(`http://localhost:5001/api/qr/${shortCode}`);
+        const qrResponse = await fetch(`/api/qr/${shortCode}`);
         const qrData = await qrResponse.json();
         setQrCode(qrData.qrCode);
       }

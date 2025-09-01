@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 
 interface AnalyticsProps {
@@ -10,14 +10,14 @@ const Analytics: React.FC<AnalyticsProps> = ({ user }) => {
   const [analytics, setAnalytics] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  const getAuthHeaders = (): Record<string, string> => ({
+  const getAuthHeaders = useCallback((): Record<string, string> => ({
     'Authorization': `Bearer ${user.access_token}`,
     'x-user-id': user.id
-  });
+  }), [user]);
 
-  const fetchAnalytics = async () => {
+  const fetchAnalytics = useCallback(async () => {
     try {
-      const response = await fetch(`http://localhost:5001/api/analytics/${shortCode}`, {
+      const response = await fetch(`/api/analytics/${shortCode}`, {
         headers: getAuthHeaders()
       });
       const data = await response.json();
@@ -28,7 +28,7 @@ const Analytics: React.FC<AnalyticsProps> = ({ user }) => {
       console.error('Error fetching analytics:', error);
     }
     setLoading(false);
-  };
+  }, [shortCode, getAuthHeaders]);
 
   useEffect(() => {
     if (user && shortCode) {
@@ -36,7 +36,7 @@ const Analytics: React.FC<AnalyticsProps> = ({ user }) => {
       const interval = setInterval(fetchAnalytics, 30000);
       return () => clearInterval(interval);
     }
-  }, [user, shortCode]);
+  }, [user, shortCode, fetchAnalytics]);
 
   if (loading) {
     return (

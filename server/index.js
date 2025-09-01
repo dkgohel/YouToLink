@@ -97,9 +97,13 @@ app.post('/api/shorten', async (req, res) => {
           }]);
         
         if (!error) {
+          const baseUrl = process.env.NODE_ENV === 'production' 
+            ? `https://${req.get('host')}`
+            : 'http://localhost:5001';
+
           results.push({
             longUrl: processedUrl,
-            shortUrl: `http://localhost:5001/${shortCode}`,
+            shortUrl: `${baseUrl}/${shortCode}`,
             shortCode
           });
         }
@@ -144,7 +148,11 @@ app.post('/api/shorten', async (req, res) => {
       return res.status(500).json({ error: 'Database error' });
     }
 
-    res.json({ shortUrl: `http://localhost:5001/${shortCode}` });
+    const baseUrl = process.env.NODE_ENV === 'production' 
+      ? `https://${req.get('host')}`
+      : 'http://localhost:5001';
+
+    res.json({ shortUrl: `${baseUrl}/${shortCode}` });
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ error: 'Server error' });

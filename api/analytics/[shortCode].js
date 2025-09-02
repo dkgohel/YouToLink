@@ -44,20 +44,26 @@ module.exports = async (req, res) => {
 
     if (analyticsData && analyticsData.length > 0) {
       analyticsData.forEach(click => {
-        const date = new Date(click.clicked_at).toLocaleDateString();
-        clicksByDate[date] = (clicksByDate[date] || 0) + 1;
+        // Fix date formatting
+        const clickDate = new Date(click.clicked_at);
+        const dateKey = clickDate.toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'short', 
+          day: 'numeric' 
+        });
+        clicksByDate[dateKey] = (clicksByDate[dateKey] || 0) + 1;
         
-        if (click.country) {
-          clicksByCountry[click.country] = (clicksByCountry[click.country] || 0) + 1;
-        }
+        // Country data (add default if missing)
+        const country = click.country || 'Unknown';
+        clicksByCountry[country] = (clicksByCountry[country] || 0) + 1;
         
-        if (click.device_type) {
-          clicksByDevice[click.device_type] = (clicksByDevice[click.device_type] || 0) + 1;
-        }
+        // Device data (add default if missing)
+        const device = click.device_type || 'Unknown';
+        clicksByDevice[device] = (clicksByDevice[device] || 0) + 1;
         
-        if (click.browser) {
-          clicksByBrowser[click.browser] = (clicksByBrowser[click.browser] || 0) + 1;
-        }
+        // Browser data (add default if missing)
+        const browser = click.browser || 'Unknown';
+        clicksByBrowser[browser] = (clicksByBrowser[browser] || 0) + 1;
       });
     }
 

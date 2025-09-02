@@ -29,6 +29,10 @@
       "dest": "/api/analytics/[shortCode].js?shortCode=$1"
     },
     {
+      "src": "/api/qr/([a-zA-Z0-9]{6})",
+      "dest": "/api/qr/[shortCode].js?shortCode=$1"
+    },
+    {
       "src": "/([a-zA-Z0-9]{6})$",
       "dest": "/api/[shortCode].js?shortCode=$1"
     },

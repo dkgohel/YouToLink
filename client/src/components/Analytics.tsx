@@ -161,13 +161,18 @@ const Analytics: React.FC<AnalyticsProps> = ({ user, onLogout }) => {
                       padding: '8px 0',
                       borderBottom: '1px solid #f1f1f1'
                     }}>
-                      <span style={{ color: '#666' }}>{new Date(date).toLocaleDateString()}</span>
+                      <span style={{ color: '#666' }}>{date}</span>
                       <span style={{ fontWeight: '600', color: '#4a90a4' }}>{clicks}</span>
                     </div>
                   ))}
               </div>
             ) : (
-              <p style={{ color: '#999', textAlign: 'center', padding: '20px' }}>No clicks yet</p>
+              <div style={{ textAlign: 'center', padding: '20px', color: '#999' }}>
+                <p>No clicks yet</p>
+                <p style={{ fontSize: '12px', marginTop: '8px' }}>
+                  Analytics data: {analytics.totalClicks} total clicks recorded
+                </p>
+              </div>
             )}
           </div>
 

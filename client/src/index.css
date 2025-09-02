@@ -715,12 +715,61 @@ body {
   }
 }
 
-@media (max-width: 480px) {
-  .stats-grid {
-    grid-template-columns: 1fr;
+/* AdSense Styling */
+.ad-container {
+  margin: 32px 0;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+}
+
+.ad-container-dashboard {
+  background: white;
+  border: 1px solid #e1e5e9;
+  margin: 24px 0;
+}
+
+.ad-container-result {
+  background: rgba(40, 167, 69, 0.1);
+  border: 1px solid rgba(40, 167, 69, 0.2);
+  margin: 24px 0;
+}
+
+.ad-banner-horizontal {
+  min-height: 90px;
+  width: 100%;
+}
+
+.ad-banner-square {
+  min-height: 250px;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.ad-banner-large {
+  min-height: 280px;
+  width: 100%;
+}
+
+/* Hide ads for premium users */
+.premium-user .ad-container {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .ad-container {
+    margin: 20px 0;
+    padding: 12px;
   }
   
-  .main-title {
-    font-size: 28px;
+  .ad-banner-horizontal {
+    min-height: 50px;
+  }
+  
+  .ad-banner-square {
+    min-height: 200px;
   }
 }

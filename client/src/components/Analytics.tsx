@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import AdBanner from './AdBanner';
 
 interface AnalyticsProps {
   user: any;
@@ -102,7 +103,7 @@ const Analytics: React.FC<AnalyticsProps> = ({ user, onLogout }) => {
   const { url, analytics } = data;
 
   return (
-    <div className="dashboard-container">
+    <div className={`dashboard-container ${user?.subscription === 'premium' ? 'premium-user' : ''}`}>
       <div className="dashboard-header">
         <Link to="/" className="dashboard-logo">YOUTOLINK</Link>
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
@@ -143,6 +144,13 @@ const Analytics: React.FC<AnalyticsProps> = ({ user, onLogout }) => {
             <div className="stat-label">Created</div>
           </div>
         </div>
+
+        {/* Analytics Banner Ad */}
+        <AdBanner 
+          adSlot="5566778899"
+          className="ad-container-dashboard"
+          style={{ minHeight: '280px' }}
+        />
 
         {/* Charts and Data */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>

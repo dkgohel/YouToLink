@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import AdBanner from './AdBanner';
 
 interface HomeProps {
   user: any;
@@ -83,7 +84,7 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
   };
 
   return (
-    <div>
+    <div className={user?.subscription === 'premium' ? 'premium-user' : ''}>
       {/* Header */}
       <header className="header">
         <Link to="/" className="logo">YOUTOLINK</Link>
@@ -110,6 +111,13 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
 
       {/* Main Content */}
       <div className="main-container">
+        {/* Top Banner Ad */}
+        <AdBanner 
+          adSlot="1234567890"
+          className="ad-container"
+          style={{ minHeight: '90px', width: '100%', marginBottom: '40px' }}
+        />
+
         {/* Left Side - Form */}
         <div className="form-section">
           <div className="form-card">
@@ -221,6 +229,15 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
               </div>
             )}
           </div>
+
+          {/* Result Ad */}
+          {shortUrl && (
+            <AdBanner 
+              adSlot="0987654321"
+              className="ad-container-result"
+              style={{ minHeight: '250px' }}
+            />
+          )}
         </div>
 
         {/* Right Side - Content */}

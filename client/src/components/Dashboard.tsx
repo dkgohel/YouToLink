@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import AdBanner from './AdBanner';
 
 interface DashboardProps {
   user: any;
@@ -72,7 +73,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
   }
 
   return (
-    <div className="dashboard-container">
+    <div className={`dashboard-container ${user?.subscription === 'premium' ? 'premium-user' : ''}`}>
       <div className="dashboard-header">
         <Link to="/" className="dashboard-logo">YOUTOLINK</Link>
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
@@ -86,6 +87,13 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
 
       <div className="dashboard-content">
         <h1 className="dashboard-title">My URLs</h1>
+
+        {/* Dashboard Banner Ad */}
+        <AdBanner 
+          adSlot="1122334455"
+          className="ad-container-dashboard"
+          style={{ minHeight: '90px' }}
+        />
 
         <div className="stats-grid">
           <div className="stat-card">

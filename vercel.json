@@ -6,27 +6,19 @@
   "framework": null,
   "routes": [
     {
-      "src": "/api/shorten",
-      "dest": "/api/shorten.js"
-    },
-    {
-      "src": "/api/qr/([a-zA-Z0-9-_]{3,20})",
-      "dest": "/api/qr/[shortCode].js?shortCode=$1"
-    },
-    {
-      "src": "/api/test",
-      "dest": "/api/test.js"
-    },
-    {
-      "src": "/(auth|dashboard|analytics).*",
-      "dest": "/client/build/index.html"
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
     },
     {
       "src": "/static/(.*)",
       "dest": "/client/build/static/$1"
     },
     {
-      "src": "/([a-zA-Z0-9-_]{3,20})$",
+      "src": "/(.*\\.(js|css|ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot))",
+      "dest": "/client/build/$1"
+    },
+    {
+      "src": "/([a-zA-Z0-9]{6})",
       "dest": "/api/[shortCode].js?shortCode=$1"
     },
     {

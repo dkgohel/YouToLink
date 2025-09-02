@@ -32,8 +32,42 @@ module.exports = async (req, res) => {
     // API Routes
     if (urlPath.startsWith('/api/')) {
       if (method === 'POST' && urlPath === '/api/shorten') {
-        const { longUrl, customCode } = req.body;
+        const { longUrl, customCode, urls } = req.body;
         
+        // Handle bulk URLs
+        if (urls && Array.isArray(urls)) {
+          const results = [];
+          
+          for (const url of urls) {
+            if (!url.trim()) continue;
+            
+            let processedUrl = url.trim();
+            if (!processedUrl.startsWith('http://') && !processedUrl.startsWith('https://')) {
+              processedUrl = 'https://' + processedUrl;
+            }
+            
+            const shortCode = generateShortCode();
+            
+            const { error } = await supabase
+              .from('urls')
+              .insert([{
+                short_code: shortCode,
+                long_url: processedUrl
+              }]);
+            
+            if (!error) {
+              results.push({
+                longUrl: processedUrl,
+                shortUrl: `https://u2l.in/${shortCode}`,
+                shortCode
+              });
+            }
+          }
+          
+          return res.json({ results });
+        }
+        
+        // Handle single URL
         if (!longUrl) {
           return res.status(400).json({ error: 'Long URL is required' });
         }

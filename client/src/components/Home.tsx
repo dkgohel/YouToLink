@@ -108,22 +108,24 @@ const Home: React.FC<HomeProps> = ({ user }) => {
       </div>
       
       <div className="card">
-        <div className="mode-selector">
-          <button 
-            className={`mode-btn ${mode === 'single' ? 'active' : ''}`}
-            onClick={() => setMode('single')}
-          >
-            Single URL
-          </button>
-          <button 
-            className={`mode-btn ${mode === 'bulk' ? 'active' : ''}`}
-            onClick={() => setMode('bulk')}
-          >
-            Bulk URLs
-          </button>
-        </div>
+        {user && (
+          <div className="mode-selector">
+            <button 
+              className={`mode-btn ${mode === 'single' ? 'active' : ''}`}
+              onClick={() => setMode('single')}
+            >
+              Single URL
+            </button>
+            <button 
+              className={`mode-btn ${mode === 'bulk' ? 'active' : ''}`}
+              onClick={() => setMode('bulk')}
+            >
+              Bulk URLs
+            </button>
+          </div>
+        )}
 
-        {mode === 'single' ? (
+        {(mode === 'single' || !user) ? (
           <>
             <div className="form-group">
               <label className="input-label">Enter your long URL</label>

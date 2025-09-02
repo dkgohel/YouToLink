@@ -6,8 +6,16 @@ interface DashboardProps {
   onLogout: () => void;
 }
 
+interface UrlItem {
+  id: number;
+  short_code: string;
+  long_url: string;
+  click_count: number;
+  created_at: string;
+}
+
 const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
-  const [urls, setUrls] = useState<any[]>([]);
+  const [urls, setUrls] = useState<UrlItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editValue, setEditValue] = useState('');

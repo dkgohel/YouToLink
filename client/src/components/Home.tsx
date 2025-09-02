@@ -6,6 +6,12 @@ interface HomeProps {
   onLogout: () => void;
 }
 
+interface BulkResult {
+  longUrl: string;
+  shortUrl: string;
+  shortCode: string;
+}
+
 const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
   const [mode, setMode] = useState<'single' | 'bulk'>('single');
   const [longUrl, setLongUrl] = useState('');
@@ -13,7 +19,7 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
   const [bulkUrls, setBulkUrls] = useState('');
   const [shortUrl, setShortUrl] = useState('');
   const [qrCode, setQrCode] = useState('');
-  const [bulkResults, setBulkResults] = useState<any[]>([]);
+  const [bulkResults, setBulkResults] = useState<BulkResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);

@@ -129,28 +129,30 @@ const Home: React.FC<HomeProps> = ({ user }) => {
               <label className="input-label">Enter your long URL</label>
               <input
                 type="url"
-                placeholder="https://example.com/very-long-url-that-needs-shortening"
+                placeholder="https://example.com"
                 value={longUrl}
                 onChange={(e) => setLongUrl(e.target.value)}
                 className="input"
               />
             </div>
 
-            <div className="form-group">
-              <label className="input-label">Custom short code (optional)</label>
-              <div className="custom-url-container">
-                <span className="url-prefix">localhost:5001/</span>
-                <input
-                  type="text"
-                  placeholder="my-custom-link"
-                  value={customCode}
-                  onChange={(e) => setCustomCode(e.target.value.replace(/[^a-zA-Z0-9-_]/g, ''))}
-                  className="custom-input"
-                  maxLength={20}
-                />
+            {user && (
+              <div className="form-group">
+                <label className="input-label">Custom short code (optional)</label>
+                <div className="custom-url-container">
+                  <span className="url-prefix">u2l.in/</span>
+                  <input
+                    type="text"
+                    placeholder="my-link"
+                    value={customCode}
+                    onChange={(e) => setCustomCode(e.target.value.replace(/[^a-zA-Z0-9-_]/g, ''))}
+                    className="custom-input"
+                    maxLength={20}
+                  />
+                </div>
+                <div className="input-help">3-20 characters: letters, numbers, hyphens, underscores</div>
               </div>
-              <div className="input-help">3-20 characters: letters, numbers, hyphens, underscores</div>
-            </div>
+            )}
           </>
         ) : (
           <div className="form-group">

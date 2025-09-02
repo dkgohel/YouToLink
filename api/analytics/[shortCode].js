@@ -5,7 +5,7 @@ const supabaseKey = process.env.SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 module.exports = async (req, res) => {
-  const { shortCode } = req.query;
+  const shortCode = req.query.shortCode || req.url.split('/').pop();
 
   if (!shortCode) {
     return res.status(400).json({ error: 'Short code required' });
@@ -30,36 +30,33 @@ module.exports = async (req, res) => {
       .eq('url_id', urlData.id)
       .order('clicked_at', { ascending: false });
 
-    if (analyticsError) {
-      console.error('Analytics error:', analyticsError);
-      return res.status(500).json({ error: 'Failed to fetch analytics' });
-    }
-
-    // Process analytics data
+    // Process analytics data (even if empty)
     const totalClicks = analyticsData?.length || 0;
-    const uniqueClicks = new Set(analyticsData?.map(a => a.ip_address)).size;
+    const uniqueClicks = analyticsData ? new Set(analyticsData.map(a => a.ip_address)).size : 0;
     
     const clicksByDate = {};
     const clicksByCountry = {};
     const clicksByDevice = {};
     const clicksByBrowser = {};
 
-    analyticsData?.forEach(click => {
-      const date = new Date(click.clicked_at).toDateString();
-      clicksByDate[date] = (clicksByDate[date] || 0) + 1;
-      
-      if (click.country) {
-        clicksByCountry[click.country] = (clicksByCountry[click.country] || 0) + 1;
-      }
-      
-      if (click.device_type) {
-        clicksByDevice[click.device_type] = (clicksByDevice[click.device_type] || 0) + 1;
-      }
-      
-      if (click.browser) {
-        clicksByBrowser[click.browser] = (clicksByBrowser[click.browser] || 0) + 1;
-      }
-    });
+    if (analyticsData) {
+      analyticsData.forEach(click => {
+        const date = new Date(click.clicked_at).toDateString();
+        clicksByDate[date] = (clicksByDate[date] || 0) + 1;
+        
+        if (click.country) {
+          clicksByCountry[click.country] = (clicksByCountry[click.country] || 0) + 1;
+        }
+        
+        if (click.device_type) {
+          clicksByDevice[click.device_type] = (clicksByDevice[click.device_type] || 0) + 1;
+        }
+        
+        if (click.browser) {
+          clicksByBrowser[click.browser] = (clicksByBrowser[click.browser] || 0) + 1;
+        }
+      });
+    }
 
     res.json({
       url: urlData,

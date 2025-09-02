@@ -5,12 +5,24 @@
   "installCommand": "npm install",
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "source": "/api/shorten",
+      "destination": "/api/shorten.js"
+    },
+    {
+      "source": "/api/my-urls",
+      "destination": "/api/my-urls.js"
+    },
+    {
+      "source": "/api/analytics/(.*)",
+      "destination": "/api/analytics/[shortCode].js?shortCode=$1"
+    },
+    {
+      "source": "/api/qr/(.*)",
+      "destination": "/api/qr/[shortCode].js?shortCode=$1"
     },
     {
       "source": "/([a-zA-Z0-9]{6})",
-      "destination": "/api/[shortCode].js"
+      "destination": "/api/[shortCode].js?shortCode=$1"
     },
     {
       "source": "/(.*)",

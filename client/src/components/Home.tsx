@@ -109,7 +109,7 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
                   Enter long link here
                 </label>
                 <input
-                  type="url"
+                  type="text"
                   placeholder="Enter long link here"
                   value={longUrl}
                   onChange={(e) => setLongUrl(e.target.value)}

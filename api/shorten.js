@@ -2,7 +2,6 @@ const { createClient } = require('@supabase/supabase-js');
 
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
 
 function generateShortCode() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -32,6 +31,13 @@ module.exports = async (req, res) => {
   try {
     const { longUrl, customCode, urls } = req.body;
     
+    // Get user ID from headers
+    const userId = req.headers['x-user-id'] || null;
+    const authToken = req.headers.authorization?.replace('Bearer ', '');
+    
+    // Create supabase client
+    const supabase = createClient(supabaseUrl, supabaseKey);
+    
     // Handle bulk URLs
     if (urls && Array.isArray(urls)) {
       const results = [];
@@ -50,7 +56,8 @@ module.exports = async (req, res) => {
           .from('urls')
           .insert([{
             short_code: shortCode,
-            long_url: processedUrl
+            long_url: processedUrl,
+            user_id: userId
           }]);
         
         if (!error) {
@@ -81,7 +88,8 @@ module.exports = async (req, res) => {
       .from('urls')
       .insert([{ 
         short_code: shortCode, 
-        long_url: processedUrl 
+        long_url: processedUrl,
+        user_id: userId
       }]);
 
     if (error) {

@@ -2,6 +2,8 @@
 
 A simple URL shortener web application built with React.js and Node.js.
 
+**Live at: https://u2l.in**
+
 ## Features
 
 - Shorten long URLs to compact links

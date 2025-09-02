@@ -1467,3 +1467,297 @@ body {
     justify-content: center;
   }
 }
+/* User Header Styling */
+.user-header {
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 12px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.user-header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-link {
+  text-decoration: none;
+  color: #3b82f6;
+}
+
+.logo-link h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-email {
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-btn {
+  padding: 8px 16px;
+  background: #f1f5f9;
+  color: #475569;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.nav-btn:hover {
+  background: #e2e8f0;
+}
+
+.logout-btn {
+  padding: 8px 16px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  background: #dc2626;
+}
+
+.dashboard-title {
+  font-size: 28px;
+  color: #1e293b;
+  margin: 24px 0 8px 0;
+}
+
+.create-new-btn {
+  padding: 12px 24px;
+  background: #3b82f6;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.create-new-btn:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+/* Mobile Responsive Improvements */
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+    max-width: 100%;
+  }
+
+  .user-header-content {
+    padding: 0 16px;
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .user-info {
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .user-email {
+    font-size: 12px;
+  }
+
+  .user-menu {
+    gap: 8px;
+  }
+
+  .nav-btn, .logout-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .logo {
+    font-size: 32px;
+    margin-bottom: 8px;
+  }
+
+  .tagline {
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+
+  .card {
+    padding: 20px;
+    margin: 0;
+  }
+
+  .mode-selector {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .mode-btn {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .input, .bulk-input, .custom-input {
+    font-size: 16px; /* Prevents zoom on iOS */
+    padding: 12px;
+  }
+
+  .custom-url-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .url-prefix {
+    padding: 8px 12px;
+    border-radius: 8px 8px 0 0;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .custom-input {
+    border-radius: 0 0 8px 8px;
+    border-top: none;
+  }
+
+  .shorten-btn {
+    padding: 14px;
+    font-size: 16px;
+  }
+
+  .result-card {
+    padding: 16px;
+  }
+
+  .short-url {
+    font-size: 16px;
+    word-break: break-all;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .copy-btn, .qr-btn {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .qr-code {
+    width: 150px;
+    height: 150px;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .dashboard-title {
+    font-size: 24px;
+    margin: 16px 0;
+  }
+
+  .urls-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .url-card {
+    padding: 16px;
+  }
+
+  .url-info h3 {
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+
+  .url-info p {
+    font-size: 12px;
+  }
+
+  .url-actions {
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .url-actions button {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .bulk-results {
+    gap: 12px;
+  }
+
+  .bulk-result-item {
+    padding: 12px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 12px;
+  }
+
+  .logo {
+    font-size: 28px;
+  }
+
+  .tagline {
+    font-size: 14px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .user-header-content {
+    padding: 0 12px;
+  }
+
+  .user-info {
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .dashboard-title {
+    font-size: 20px;
+  }
+}

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import UserHeader from './UserHeader';
 
 interface HomeProps {
   user: any;
+  onLogout: () => void;
 }
 
-const Home: React.FC<HomeProps> = ({ user }) => {
+const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
   const [longUrl, setLongUrl] = useState('');
   const [customCode, setCustomCode] = useState('');
   const [bulkUrls, setBulkUrls] = useState('');
@@ -100,6 +102,8 @@ const Home: React.FC<HomeProps> = ({ user }) => {
 
   return (
     <div className="container">
+      {user && <UserHeader user={user} onLogout={onLogout} />}
+      
       <div className="header">
         <h1 className="logo">You To Link</h1>
         <p className="tagline">Transform long URLs into short, shareable links instantly</p>

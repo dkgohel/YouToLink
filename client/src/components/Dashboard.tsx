@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../supabase';
+import UserHeader from './UserHeader';
 
 interface DashboardProps {
   user: any;
+  onLogout: () => void;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ user }) => {
+const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
   const [urls, setUrls] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -103,19 +105,13 @@ const Dashboard: React.FC<DashboardProps> = ({ user }) => {
 
   return (
     <div className="container">
+      <UserHeader user={user} onLogout={onLogout} />
+      
       <div className="dashboard-header">
         <div>
-          <Link to="/" className="logo-link">
-            <h1 className="logo">You To Link</h1>
-          </Link>
-          <p className="tagline">Your Link Dashboard</p>
+          <h1 className="dashboard-title">Your Link Dashboard</h1>
         </div>
-        <div className="dashboard-nav">
-          <span className="user-email">{user.email}</span>
-          <button onClick={handleSignOut} className="sign-out-btn">
-            Sign Out
-          </button>
-        </div>
+        <Link to="/" className="create-new-btn">Create New URL</Link>
       </div>
 
       <div className="dashboard-content">

@@ -33,12 +33,16 @@ function App() {
     );
   }
 
+  const handleLogout = () => {
+    setUser(null);
+  };
+
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home user={user} />} />
+        <Route path="/" element={<Home user={user} onLogout={handleLogout} />} />
         <Route path="/auth" element={user ? <Navigate to="/dashboard" /> : <Auth onAuth={setUser} />} />
-        <Route path="/dashboard" element={user ? <Dashboard user={user} /> : <Navigate to="/auth" />} />
+        <Route path="/dashboard" element={user ? <Dashboard user={user} onLogout={handleLogout} /> : <Navigate to="/auth" />} />
         <Route path="/analytics/:shortCode" element={user ? <Analytics user={user} /> : <Navigate to="/auth" />} />
       </Routes>
     </Router>

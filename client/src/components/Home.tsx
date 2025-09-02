@@ -96,55 +96,49 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
   };
 
   return (
-    <div className="app-container">
-      {/* Navigation */}
-      <nav className="nav-header">
-        <div className="nav-container">
-          <Link to="/" className="logo">
-            You To Link
-          </Link>
+    <div>
+      {/* Header */}
+      <header className="header">
+        <div className="header-content">
+          <Link to="/" className="logo">You To Link</Link>
           
-          <div className="nav-menu">
+          <div className="nav-items">
             {user ? (
               <>
-                <div className="user-info">
+                <div className="user-menu">
                   <span className="user-email">{user.email}</span>
+                  <button onClick={onLogout} className="logout-btn">Logout</button>
                 </div>
-                <Link to="/dashboard" className="nav-link">Dashboard</Link>
-                <button onClick={onLogout} className="logout-btn">Logout</button>
+                <Link to="/dashboard" className="nav-link">My URLs</Link>
               </>
             ) : (
               <Link to="/auth" className="nav-link">Sign In</Link>
             )}
           </div>
         </div>
-      </nav>
-
-      {/* Hero Section */}
-      <section className="hero-section">
-        <h1 className="hero-title">Shorten Your URLs</h1>
-        <p className="hero-subtitle">
-          Transform long URLs into short, shareable links instantly. 
-          Track clicks, generate QR codes, and manage all your links in one place.
-        </p>
-      </section>
+      </header>
 
       {/* Main Content */}
-      <main className="main-content">
-        <div className="card">
+      <div className="container">
+        <div className="hero">
+          <h1>Shorten Your Loooong Links :)</h1>
+          <p>You To Link is a free tool to shorten URLs and generate short links. URL shortener allows to create a shortened link making it easy to share.</p>
+        </div>
+
+        <div className="main-card">
           {user && (
-            <div className="mode-selector">
+            <div className="mode-tabs">
               <button 
-                className={`mode-btn ${mode === 'single' ? 'active' : ''}`}
+                className={`mode-tab ${mode === 'single' ? 'active' : ''}`}
                 onClick={() => setMode('single')}
               >
                 Single URL
               </button>
               <button 
-                className={`mode-btn ${mode === 'bulk' ? 'active' : ''}`}
+                className={`mode-tab ${mode === 'bulk' ? 'active' : ''}`}
                 onClick={() => setMode('bulk')}
               >
-                Bulk URLs
+                Bulk Shorten
               </button>
             </div>
           )}
@@ -153,10 +147,10 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
             {(mode === 'single' || !user) ? (
               <>
                 <div className="form-group">
-                  <label className="form-label">Enter your long URL</label>
+                  <label className="form-label">Paste the URL to be shortened</label>
                   <input
                     type="url"
-                    placeholder="https://example.com/your-very-long-url"
+                    placeholder="Enter the link here"
                     value={longUrl}
                     onChange={(e) => setLongUrl(e.target.value)}
                     className="form-input"
@@ -166,19 +160,18 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
 
                 {user && (
                   <div className="form-group">
-                    <label className="form-label">Custom short code (optional)</label>
-                    <div className="url-input-group">
+                    <label className="form-label">Customize your link</label>
+                    <div className="url-group">
                       <span className="url-prefix">u2l.in/</span>
                       <input
                         type="text"
-                        placeholder="my-custom-link"
+                        placeholder="Enter custom name (optional)"
                         value={customCode}
                         onChange={(e) => setCustomCode(e.target.value.replace(/[^a-zA-Z0-9-_]/g, ''))}
                         className="url-input"
                         maxLength={20}
                       />
                     </div>
-                    <div className="form-help">3-20 characters: letters, numbers, hyphens, underscores</div>
                   </div>
                 )}
               </>
@@ -189,7 +182,7 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
                   placeholder="https://example1.com&#10;https://example2.com&#10;https://example3.com"
                   value={bulkUrls}
                   onChange={(e) => setBulkUrls(e.target.value)}
-                  className="form-input form-textarea"
+                  className="form-input textarea"
                   rows={6}
                   required
                 />
@@ -206,114 +199,84 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
               type="submit" 
               disabled={loading || (mode === 'single' ? !longUrl : !bulkUrls)}
               className="btn btn-primary btn-lg"
-              style={{ width: '100%' }}
             >
               {loading ? (
                 <>
                   <span className="spinner"></span>
-                  {mode === 'single' ? 'Shortening...' : 'Processing URLs...'}
+                  {mode === 'single' ? 'Shortening...' : 'Processing...'}
                 </>
               ) : (
-                mode === 'single' ? 'Shorten URL' : 'Shorten All URLs'
+                'Shorten URL!'
               )}
             </button>
           </form>
 
           {/* Single URL Result */}
           {shortUrl && (
-            <div className="result-section fade-in">
-              <div className="result-card">
-                <div className="short-url">{shortUrl}</div>
-                <div className="result-actions">
-                  <button 
-                    onClick={() => copyToClipboard(shortUrl)}
-                    className="btn btn-success"
-                  >
-                    {copied ? '✓ Copied!' : '📋 Copy Link'}
-                  </button>
-                  <a 
-                    href={shortUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="btn btn-secondary"
-                  >
-                    🔗 Open Link
-                  </a>
-                </div>
-                
-                {qrCode && (
-                  <div className="qr-section">
-                    <img src={qrCode} alt="QR Code" className="qr-code" />
-                    <div style={{ marginTop: '0.5rem' }}>
-                      <button 
-                        onClick={() => {
-                          const link = document.createElement('a');
-                          link.download = `qr-code-${shortUrl.split('/').pop()}.png`;
-                          link.href = qrCode;
-                          link.click();
-                        }}
-                        className="btn btn-sm btn-secondary"
-                      >
-                        📱 Download QR
-                      </button>
-                    </div>
-                  </div>
-                )}
+            <div className="result">
+              <div className="short-url">{shortUrl}</div>
+              <div className="result-actions">
+                <button 
+                  onClick={() => copyToClipboard(shortUrl)}
+                  className="btn btn-success"
+                >
+                  {copied ? '✓ Copied!' : 'Copy'}
+                </button>
+                <a 
+                  href={shortUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="btn btn-secondary"
+                >
+                  Preview
+                </a>
               </div>
+              
+              {qrCode && (
+                <div className="qr-section">
+                  <img src={qrCode} alt="QR Code" className="qr-code" />
+                  <div>
+                    <button 
+                      onClick={() => {
+                        const link = document.createElement('a');
+                        link.download = `qr-code-${shortUrl.split('/').pop()}.png`;
+                        link.href = qrCode;
+                        link.click();
+                      }}
+                      className="btn btn-sm btn-secondary"
+                    >
+                      Download QR
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
           {/* Bulk Results */}
           {bulkResults.length > 0 && (
-            <div className="result-section fade-in">
-              <div className="card-header">
-                <h3 className="card-title">Shortened URLs ({bulkResults.length})</h3>
-              </div>
-              <div className="bulk-results">
-                {bulkResults.map((result, index) => (
-                  <div key={index} className="bulk-item">
-                    <div className="bulk-item-info">
-                      <div className="bulk-item-url">{result.shortUrl}</div>
-                      <div className="bulk-item-original">{result.longUrl}</div>
-                    </div>
-                    <button 
-                      onClick={() => copyToClipboard(result.shortUrl)}
-                      className="btn btn-sm btn-success"
-                    >
-                      📋 Copy
-                    </button>
+            <div className="bulk-results">
+              <h3 style={{ marginBottom: '20px', color: '#333' }}>
+                Shortened URLs ({bulkResults.length})
+              </h3>
+              {bulkResults.map((result, index) => (
+                <div key={index} className="bulk-item">
+                  <div className="bulk-info">
+                    <div className="bulk-short">{result.shortUrl}</div>
+                    <div className="bulk-original">{result.longUrl}</div>
                   </div>
-                ))}
-              </div>
+                  <button 
+                    onClick={() => copyToClipboard(result.shortUrl)}
+                    className="btn btn-sm btn-success"
+                  >
+                    Copy
+                  </button>
+                </div>
+              ))}
             </div>
           )}
         </div>
-
-        {/* Features Section */}
-        <div className="card">
-          <div className="card-header">
-            <h2 className="card-title">Why Choose You To Link?</h2>
-          </div>
-          <div className="dashboard-stats">
-            <div className="stat-card">
-              <div className="stat-number">⚡</div>
-              <div className="stat-label">Lightning Fast</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-number">📊</div>
-              <div className="stat-label">Detailed Analytics</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-number">🎯</div>
-              <div className="stat-label">Custom URLs</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-number">📱</div>
-              <div className="stat-label">QR Code Generation</div>
-            </div>
-          </div>
-        </div>
-      </main>
+      </div>
     </div>
   );
 };

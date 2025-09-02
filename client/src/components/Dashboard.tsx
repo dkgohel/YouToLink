@@ -20,11 +20,6 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editValue, setEditValue] = useState('');
 
-  const getAuthHeaders = (): Record<string, string> => ({
-    'x-user-id': user.id,
-    'Authorization': `Bearer ${user.access_token || ''}`
-  });
-
   const fetchUrls = useCallback(async () => {
     try {
       const response = await fetch('/api/my-urls', {
@@ -59,7 +54,8 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          ...getAuthHeaders()
+          'x-user-id': user.id,
+          'Authorization': `Bearer ${user.access_token || ''}`
         },
         body: JSON.stringify({ shortCode: editValue }),
       });
@@ -79,7 +75,10 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
     try {
       const response = await fetch(`/api/urls/${id}`, {
         method: 'DELETE',
-        headers: getAuthHeaders(),
+        headers: {
+          'x-user-id': user.id,
+          'Authorization': `Bearer ${user.access_token || ''}`
+        },
       });
 
       if (response.ok) {
@@ -102,55 +101,55 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
 
   if (loading) {
     return (
-      <div className="app-container">
-        <nav className="nav-header">
-          <div className="nav-container">
+      <div>
+        <header className="header">
+          <div className="header-content">
             <Link to="/" className="logo">You To Link</Link>
-            <div className="nav-menu">
-              <div className="user-info">
+            <div className="nav-items">
+              <div className="user-menu">
                 <span className="user-email">{user.email}</span>
+                <button onClick={onLogout} className="logout-btn">Logout</button>
               </div>
-              <button onClick={onLogout} className="logout-btn">Logout</button>
             </div>
           </div>
-        </nav>
-        <main className="main-content">
+        </header>
+        <div className="container">
           <div className="loading">
             <span className="spinner"></span>
             Loading your links...
           </div>
-        </main>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="app-container">
-      {/* Navigation */}
-      <nav className="nav-header">
-        <div className="nav-container">
+    <div>
+      {/* Header */}
+      <header className="header">
+        <div className="header-content">
           <Link to="/" className="logo">You To Link</Link>
-          <div className="nav-menu">
-            <div className="user-info">
+          <div className="nav-items">
+            <div className="user-menu">
               <span className="user-email">{user.email}</span>
+              <button onClick={onLogout} className="logout-btn">Logout</button>
             </div>
             <Link to="/" className="nav-link">Create New</Link>
-            <button onClick={onLogout} className="logout-btn">Logout</button>
           </div>
         </div>
-      </nav>
+      </header>
 
       {/* Main Content */}
-      <main className="main-content">
+      <div className="container">
         <div className="dashboard-header">
-          <h1 className="dashboard-title">My Dashboard</h1>
+          <h1 className="dashboard-title">My URLs</h1>
           <Link to="/" className="btn btn-primary">
-            ➕ Create New URL
+            + Create New URL
           </Link>
         </div>
 
         {/* Stats */}
-        <div className="dashboard-stats">
+        <div className="stats-grid">
           <div className="stat-card">
             <div className="stat-number">{urls.length}</div>
             <div className="stat-label">Total Links</div>
@@ -171,27 +170,25 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
 
         {/* URLs List */}
         {urls.length === 0 ? (
-          <div className="card">
-            <div style={{ textAlign: 'center', padding: '3rem' }}>
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔗</div>
-              <h3 style={{ marginBottom: '0.5rem', color: '#64748b' }}>No URLs yet</h3>
-              <p style={{ color: '#64748b', marginBottom: '2rem' }}>
-                Create your first shortened URL to get started
-              </p>
+          <div className="main-card">
+            <div className="empty-state">
+              <div className="empty-state-icon">🔗</div>
+              <h3>No URLs yet</h3>
+              <p>Create your first shortened URL to get started</p>
               <Link to="/" className="btn btn-primary">
                 Create Your First URL
               </Link>
             </div>
           </div>
         ) : (
-          <div className="urls-grid">
+          <div className="urls-list">
             {urls.map((url) => (
-              <div key={url.id} className="url-card">
+              <div key={url.id} className="url-item">
                 <div className="url-header">
                   <div className="url-info">
                     <h3>
                       {editingId === url.id ? (
-                        <div className="url-input-group" style={{ marginBottom: '0.5rem' }}>
+                        <div className="url-group" style={{ marginBottom: '8px' }}>
                           <span className="url-prefix">u2l.in/</span>
                           <input
                             type="text"
@@ -199,6 +196,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
                             onChange={(e) => setEditValue(e.target.value)}
                             className="url-input"
                             onKeyPress={(e) => e.key === 'Enter' && handleSaveEdit(url.id)}
+                            style={{ fontSize: '16px' }}
                           />
                         </div>
                       ) : (
@@ -207,17 +205,15 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
                     </h3>
                     <p>{url.long_url}</p>
                   </div>
-                  <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#3b82f6' }}>
+                  <div className="url-clicks">
                     {url.click_count || 0}
-                    <div style={{ fontSize: '0.75rem', fontWeight: 'normal', color: '#64748b' }}>
-                      clicks
-                    </div>
+                    <div className="url-clicks-label">clicks</div>
                   </div>
                 </div>
 
                 <div className="url-meta">
                   <span>Created: {new Date(url.created_at).toLocaleDateString()}</span>
-                  <span>Code: {url.short_code}</span>
+                  <span>Short code: {url.short_code}</span>
                 </div>
 
                 <div className="url-actions">
@@ -225,7 +221,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
                     onClick={() => copyToClipboard(`https://u2l.in/${url.short_code}`)}
                     className="btn btn-sm btn-success"
                   >
-                    📋 Copy
+                    Copy
                   </button>
                   <a 
                     href={`https://u2l.in/${url.short_code}`} 
@@ -233,7 +229,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
                     rel="noopener noreferrer"
                     className="btn btn-sm btn-secondary"
                   >
-                    🔗 Open
+                    Preview
                   </a>
                   {editingId === url.id ? (
                     <>
@@ -241,13 +237,13 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
                         onClick={() => handleSaveEdit(url.id)}
                         className="btn btn-sm btn-success"
                       >
-                        ✓ Save
+                        Save
                       </button>
                       <button 
                         onClick={() => setEditingId(null)}
                         className="btn btn-sm btn-secondary"
                       >
-                        ✕ Cancel
+                        Cancel
                       </button>
                     </>
                   ) : (
@@ -255,21 +251,21 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
                       onClick={() => handleEdit(url.id, url.short_code)}
                       className="btn btn-sm btn-secondary"
                     >
-                      ✏️ Edit
+                      Edit
                     </button>
                   )}
                   <button 
                     onClick={() => handleDelete(url.id)}
                     className="btn btn-sm btn-danger"
                   >
-                    🗑️ Delete
+                    Delete
                   </button>
                 </div>
               </div>
             ))}
           </div>
         )}
-      </main>
+      </div>
     </div>
   );
 };

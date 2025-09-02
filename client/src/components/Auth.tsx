@@ -50,140 +50,103 @@ const Auth: React.FC<AuthProps> = ({ onAuth }) => {
   };
 
   return (
-    <div className="app-container">
-      {/* Navigation */}
-      <nav className="nav-header">
-        <div className="nav-container">
-          <Link to="/" className="logo">You To Link</Link>
-          <Link to="/" className="nav-link">← Back to Home</Link>
+    <div className="auth-container">
+      <div className="auth-card">
+        <div className="auth-header">
+          <Link to="/" className="logo" style={{ marginBottom: '24px', display: 'block' }}>
+            You To Link
+          </Link>
+          <h1 className="auth-title">
+            {isLogin ? 'Welcome Back!' : 'Create Account'}
+          </h1>
+          <p className="auth-subtitle">
+            {isLogin ? 'Sign in to manage your shortened URLs' : 'Join thousands of users shortening URLs'}
+          </p>
         </div>
-      </nav>
 
-      {/* Auth Content */}
-      <main className="main-content" style={{ maxWidth: '400px', paddingTop: '2rem' }}>
-        <div className="card">
-          <div className="card-header" style={{ textAlign: 'center' }}>
-            <h1 className="card-title">
-              {isLogin ? 'Welcome Back!' : 'Create Account'}
-            </h1>
-            <p className="card-subtitle">
-              {isLogin ? 'Sign in to access your dashboard' : 'Start managing your links today'}
-            </p>
-          </div>
-
-          {/* Tab Selector */}
-          <div className="mode-selector">
-            <button 
-              className={`mode-btn ${isLogin ? 'active' : ''}`}
-              onClick={() => setIsLogin(true)}
-            >
-              Sign In
-            </button>
-            <button 
-              className={`mode-btn ${!isLogin ? 'active' : ''}`}
-              onClick={() => setIsLogin(false)}
-            >
-              Sign Up
-            </button>
-          </div>
-
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label className="form-label">Email address</label>
-              <input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="form-input"
-              />
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Password</label>
-              <input
-                type="password"
-                placeholder={isLogin ? "Enter your password" : "Create a password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-                className="form-input"
-              />
-              {!isLogin && (
-                <div className="form-help">Minimum 6 characters</div>
-              )}
-            </div>
-
-            {error && (
-              <div className="message message-error">
-                {error}
-              </div>
-            )}
-
-            {message && (
-              <div className="message message-success">
-                {message}
-              </div>
-            )}
-
-            <button 
-              type="submit" 
-              disabled={loading || !email || !password}
-              className="btn btn-primary btn-lg"
-              style={{ width: '100%' }}
-            >
-              {loading ? (
-                <>
-                  <span className="spinner"></span>
-                  {isLogin ? 'Signing in...' : 'Creating account...'}
-                </>
-              ) : (
-                isLogin ? 'Sign In' : 'Create Account'
-              )}
-            </button>
-          </form>
-
-          <div style={{ textAlign: 'center', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #e2e8f0' }}>
-            <p style={{ color: '#64748b', fontSize: '0.875rem' }}>
-              {isLogin ? "Don't have an account? " : "Already have an account? "}
-              <button 
-                type="button"
-                onClick={() => setIsLogin(!isLogin)}
-                style={{ 
-                  background: 'none', 
-                  border: 'none', 
-                  color: '#3b82f6', 
-                  fontWeight: '600', 
-                  cursor: 'pointer',
-                  textDecoration: 'underline'
-                }}
-              >
-                {isLogin ? 'Sign up' : 'Sign in'}
-              </button>
-            </p>
-          </div>
-
-          {/* Features */}
-          <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid #e2e8f0' }}>
-            <div className="dashboard-stats" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>📊</div>
-                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Analytics</div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>🎯</div>
-                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Custom URLs</div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>📱</div>
-                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>QR Codes</div>
-              </div>
-            </div>
-          </div>
+        {/* Tab Selector */}
+        <div className="mode-tabs">
+          <button 
+            className={`mode-tab ${isLogin ? 'active' : ''}`}
+            onClick={() => setIsLogin(true)}
+          >
+            Sign In
+          </button>
+          <button 
+            className={`mode-tab ${!isLogin ? 'active' : ''}`}
+            onClick={() => setIsLogin(false)}
+          >
+            Sign Up
+          </button>
         </div>
-      </main>
+
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label className="form-label">Email Address</label>
+            <input
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="form-input"
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Password</label>
+            <input
+              type="password"
+              placeholder={isLogin ? "Enter your password" : "Create a password (min. 6 characters)"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={6}
+              className="form-input"
+            />
+          </div>
+
+          {error && (
+            <div className="message message-error">
+              {error}
+            </div>
+          )}
+
+          {message && (
+            <div className="message message-success">
+              {message}
+            </div>
+          )}
+
+          <button 
+            type="submit" 
+            disabled={loading || !email || !password}
+            className="btn btn-primary btn-lg"
+          >
+            {loading ? (
+              <>
+                <span className="spinner"></span>
+                {isLogin ? 'Signing in...' : 'Creating account...'}
+              </>
+            ) : (
+              isLogin ? 'Sign In' : 'Create Account'
+            )}
+          </button>
+        </form>
+
+        <div className="auth-footer">
+          <p>
+            {isLogin ? "Don't have an account? " : "Already have an account? "}
+            <button 
+              type="button"
+              onClick={() => setIsLogin(!isLogin)}
+              className="auth-switch"
+            >
+              {isLogin ? 'Sign up here' : 'Sign in here'}
+            </button>
+          </p>
+        </div>
+      </div>
     </div>
   );
 };

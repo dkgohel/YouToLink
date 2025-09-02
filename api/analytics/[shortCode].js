@@ -30,8 +30,11 @@ module.exports = async (req, res) => {
       .eq('url_id', urlData.id)
       .order('clicked_at', { ascending: false });
 
+    console.log(`Analytics for ${shortCode}: Found ${analyticsData?.length || 0} clicks`);
+
     // Process analytics data (even if empty)
-    const totalClicks = analyticsData?.length || 0;
+    const totalClicks = urlData.click_count || 0; // Use URL click count as primary source
+    const analyticsClicks = analyticsData?.length || 0;
     const uniqueClicks = analyticsData ? new Set(analyticsData.map(a => a.ip_address)).size : 0;
     
     const clicksByDate = {};
@@ -39,9 +42,9 @@ module.exports = async (req, res) => {
     const clicksByDevice = {};
     const clicksByBrowser = {};
 
-    if (analyticsData) {
+    if (analyticsData && analyticsData.length > 0) {
       analyticsData.forEach(click => {
-        const date = new Date(click.clicked_at).toDateString();
+        const date = new Date(click.clicked_at).toLocaleDateString();
         clicksByDate[date] = (clicksByDate[date] || 0) + 1;
         
         if (click.country) {
@@ -58,10 +61,10 @@ module.exports = async (req, res) => {
       });
     }
 
-    res.json({
+    const response = {
       url: urlData,
       analytics: {
-        totalClicks,
+        totalClicks: Math.max(totalClicks, analyticsClicks), // Use higher count
         uniqueClicks,
         clicksByDate,
         clicksByCountry,
@@ -69,7 +72,10 @@ module.exports = async (req, res) => {
         clicksByBrowser,
         recentClicks: analyticsData?.slice(0, 10) || []
       }
-    });
+    };
+
+    console.log(`Returning analytics: ${response.analytics.totalClicks} total clicks`);
+    res.json(response);
     
   } catch (error) {
     console.error('Analytics API error:', error);

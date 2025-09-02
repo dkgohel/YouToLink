@@ -49,6 +49,20 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
       }
       
       setShortUrl(data.shortUrl);
+      
+      // Generate QR code
+      const shortCode = data.shortUrl.split('/').pop();
+      if (shortCode) {
+        try {
+          const qrResponse = await fetch(`/api/qr/${shortCode}`);
+          if (qrResponse.ok) {
+            const qrData = await qrResponse.json();
+            setQrCode(qrData.qrCode);
+          }
+        } catch (qrError) {
+          console.log('QR generation failed:', qrError);
+        }
+      }
     } catch (error) {
       console.error('Error shortening URL:', error);
       setError('Failed to shorten URL. Please try again.');
@@ -182,6 +196,26 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
                     Preview
                   </a>
                 </div>
+                
+                {qrCode && (
+                  <div style={{ marginTop: '24px', paddingTop: '24px', borderTop: '1px solid #28a745' }}>
+                    <img src={qrCode} alt="QR Code" style={{ maxWidth: '200px', borderRadius: '8px', margin: '0 auto 16px', display: 'block' }} />
+                    <div>
+                      <button 
+                        onClick={() => {
+                          const link = document.createElement('a');
+                          link.download = `qr-code-${shortUrl.split('/').pop()}.png`;
+                          link.href = qrCode;
+                          link.click();
+                        }}
+                        className="btn-copy"
+                        style={{ fontSize: '14px', padding: '8px 16px' }}
+                      >
+                        Download QR
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

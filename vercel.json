@@ -7,7 +7,7 @@
   "routes": [
     {
       "src": "/api/shorten",
-      "dest": "/api/index.js"
+      "dest": "/api/shorten.js"
     },
     {
       "src": "/([a-zA-Z0-9-_]{3,20})",

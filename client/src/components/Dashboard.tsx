@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { supabase } from '../supabase';
 import UserHeader from './UserHeader';
 
 interface DashboardProps {

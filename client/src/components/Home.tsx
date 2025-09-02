@@ -62,10 +62,16 @@ const Home: React.FC<HomeProps> = ({ user }) => {
         setShortUrl(data.shortUrl);
         
         // Generate QR code
-        const shortCode = data.shortUrl.split('/').pop();
-        const qrResponse = await fetch(`/api/qr/${shortCode}`);
-        const qrData = await qrResponse.json();
-        setQrCode(qrData.qrCode);
+        try {
+          const shortCode = data.shortUrl.split('/').pop();
+          const qrResponse = await fetch(`/api/qr/${shortCode}`);
+          if (qrResponse.ok) {
+            const qrData = await qrResponse.json();
+            setQrCode(qrData.qrCode);
+          }
+        } catch (qrError) {
+          console.log('QR generation failed, but URL shortening succeeded');
+        }
       }
       
     } catch (error) {

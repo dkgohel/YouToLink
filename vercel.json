@@ -10,6 +10,10 @@
       "dest": "/api/shorten.js"
     },
     {
+      "src": "/api/qr/([a-zA-Z0-9-_]{3,20})",
+      "dest": "/api/qr/[shortCode].js?shortCode=$1"
+    },
+    {
       "src": "/([a-zA-Z0-9-_]{3,20})",
       "dest": "/api/[shortCode].js?shortCode=$1"
     },

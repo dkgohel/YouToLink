@@ -1,139 +1,171 @@
 import React, { useState } from 'react';
-import { supabase } from '../supabase';
 import { Link } from 'react-router-dom';
+import { supabase } from '../supabase';
 
-const Auth: React.FC = () => {
-  const [mode, setMode] = useState('signin');
+interface AuthProps {
+  onAuth: (user: any) => void;
+}
+
+const Auth: React.FC<AuthProps> = ({ onAuth }) => {
+  const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
-  const handleAuth = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     setMessage('');
 
     try {
-      if (mode === 'signin') {
-        const { error } = await supabase.auth.signInWithPassword({
+      if (isLogin) {
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
+
         if (error) throw error;
-      } else if (mode === 'signup') {
+
+        if (data.user) {
+          onAuth(data.user);
+        }
+      } else {
         const { error } = await supabase.auth.signUp({
           email,
           password,
         });
+
         if (error) throw error;
+
         setMessage('Check your email for the confirmation link!');
-      } else if (mode === 'reset') {
-        const { error } = await supabase.auth.resetPasswordForEmail(email);
-        if (error) throw error;
-        setMessage('Password reset email sent!');
       }
     } catch (error: any) {
       setError(error.message);
     }
+
     setLoading(false);
   };
 
   return (
-    <div className="container">
-      <div className="header">
-        <Link to="/" className="logo-link">
-          <h1 className="logo">You To Link</h1>
-        </Link>
-        <p className="tagline">Sign in to manage your links</p>
+    <div className="auth-container">
+      <div className="auth-header">
+        <Link to="/" className="back-to-home">← Back to Home</Link>
+        <div className="auth-logo">
+          <h1>You To Link</h1>
+          <p>Join thousands shortening URLs daily</p>
+        </div>
       </div>
-      
+
       <div className="auth-card">
         <div className="auth-tabs">
           <button 
-            className={`auth-tab ${mode === 'signin' ? 'active' : ''}`}
-            onClick={() => setMode('signin')}
+            className={`auth-tab ${isLogin ? 'active' : ''}`}
+            onClick={() => setIsLogin(true)}
           >
             Sign In
           </button>
           <button 
-            className={`auth-tab ${mode === 'signup' ? 'active' : ''}`}
-            onClick={() => setMode('signup')}
+            className={`auth-tab ${!isLogin ? 'active' : ''}`}
+            onClick={() => setIsLogin(false)}
           >
             Sign Up
           </button>
         </div>
 
-        <form onSubmit={handleAuth} className="auth-form">
-          <div className="form-group">
-            <label className="input-label">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="input"
-              required
-            />
+        <div className="auth-content">
+          <div className="auth-welcome">
+            <h2>{isLogin ? 'Welcome back!' : 'Create account'}</h2>
+            <p>{isLogin ? 'Sign in to access your dashboard' : 'Start managing your links today'}</p>
           </div>
 
-          {mode !== 'reset' && (
-            <div className="form-group">
-              <label className="input-label">Password</label>
+          <form onSubmit={handleSubmit} className="auth-form">
+            <div className="input-group">
+              <label>Email address</label>
               <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="input"
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
-                minLength={6}
+                className="auth-input"
               />
             </div>
-          )}
 
-          {error && (
-            <div className="error-message">
-              ⚠️ {error}
+            <div className="input-group">
+              <label>Password</label>
+              <input
+                type="password"
+                placeholder={isLogin ? "Enter your password" : "Create a password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+                className="auth-input"
+              />
+              {!isLogin && (
+                <div className="input-hint">Minimum 6 characters</div>
+              )}
             </div>
-          )}
 
-          {message && (
-            <div className="success-message">
-              ✅ {message}
+            {error && (
+              <div className="auth-error">
+                {error}
+              </div>
+            )}
+
+            {message && (
+              <div className="auth-success">
+                {message}
+              </div>
+            )}
+
+            <button 
+              type="submit" 
+              disabled={loading || !email || !password}
+              className="auth-button"
+            >
+              {loading ? (
+                <span className="loading-spinner">
+                  <span></span>
+                  {isLogin ? 'Signing in...' : 'Creating account...'}
+                </span>
+              ) : (
+                isLogin ? 'Sign In' : 'Create Account'
+              )}
+            </button>
+          </form>
+
+          <div className="auth-footer">
+            <p>
+              {isLogin ? "Don't have an account? " : "Already have an account? "}
+              <button 
+                type="button"
+                onClick={() => setIsLogin(!isLogin)}
+                className="auth-switch"
+              >
+                {isLogin ? 'Sign up' : 'Sign in'}
+              </button>
+            </p>
+          </div>
+
+          <div className="auth-features">
+            <div className="feature-item">
+              <span className="feature-icon">📊</span>
+              <span>Analytics Dashboard</span>
             </div>
-          )}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="button"
-          >
-            {loading ? 'Loading...' : 
-             mode === 'signin' ? 'Sign In' :
-             mode === 'signup' ? 'Sign Up' : 'Reset Password'}
-          </button>
-
-          {mode === 'signin' && (
-            <button
-              type="button"
-              onClick={() => setMode('reset')}
-              className="link-button"
-            >
-              Forgot your password?
-            </button>
-          )}
-
-          {mode === 'reset' && (
-            <button
-              type="button"
-              onClick={() => setMode('signin')}
-              className="link-button"
-            >
-              Back to Sign In
-            </button>
-          )}
-        </form>
+            <div className="feature-item">
+              <span className="feature-icon">🎯</span>
+              <span>Custom Short URLs</span>
+            </div>
+            <div className="feature-item">
+              <span className="feature-icon">📱</span>
+              <span>QR Code Generation</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

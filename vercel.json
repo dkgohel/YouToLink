@@ -6,8 +6,12 @@
   "framework": null,
   "routes": [
     {
-      "src": "/api/(.*)",
+      "src": "/api/shorten",
       "dest": "/api/index.js"
+    },
+    {
+      "src": "/([a-zA-Z0-9-_]{3,20})",
+      "dest": "/api/[shortCode].js?shortCode=$1"
     },
     {
       "src": "/(.*)",

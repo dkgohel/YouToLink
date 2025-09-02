@@ -29,41 +29,38 @@ module.exports = async (req, res) => {
   const urlPath = url.split('?')[0];
 
   try {
-    // Handle different routes
-    if (method === 'POST' && urlPath === '/api/shorten') {
-      const { longUrl, customCode } = req.body;
-      
-      if (!longUrl) {
-        return res.status(400).json({ error: 'Long URL is required' });
-      }
-
-      const processedUrl = longUrl.startsWith('http') ? longUrl : `https://${longUrl}`;
-      const shortCode = customCode || generateShortCode();
-      
-      const { error } = await supabase
-        .from('urls')
-        .insert([{ short_code: shortCode, long_url: processedUrl }]);
-
-      if (error) {
-        if (error.code === '23505') {
-          return res.status(409).json({ error: 'Custom URL already exists' });
+    // API Routes
+    if (urlPath.startsWith('/api/')) {
+      if (method === 'POST' && urlPath === '/api/shorten') {
+        const { longUrl, customCode } = req.body;
+        
+        if (!longUrl) {
+          return res.status(400).json({ error: 'Long URL is required' });
         }
-        return res.status(500).json({ error: 'Database error' });
-      }
 
-      const baseUrl = req.headers.host.includes('localhost') ? 
-        `http://${req.headers.host}` : 
-        'https://u2l.in';
-      res.json({ shortUrl: `${baseUrl}/${shortCode}` });
-    }
-    else if (method === 'GET' && urlPath.startsWith('/api/')) {
-      res.status(404).json({ error: 'API endpoint not found' });
-    }
-    else {
+        const processedUrl = longUrl.startsWith('http') ? longUrl : `https://${longUrl}`;
+        const shortCode = customCode || generateShortCode();
+        
+        const { error } = await supabase
+          .from('urls')
+          .insert([{ short_code: shortCode, long_url: processedUrl }]);
+
+        if (error) {
+          if (error.code === '23505') {
+            return res.status(409).json({ error: 'Custom URL already exists' });
+          }
+          return res.status(500).json({ error: 'Database error' });
+        }
+
+        res.json({ shortUrl: `https://u2l.in/${shortCode}` });
+      } else {
+        res.status(404).json({ error: 'API endpoint not found' });
+      }
+    } else {
       // Handle short URL redirects
-      const shortCode = urlPath.substring(1);
+      const shortCode = urlPath.substring(1); // Remove leading slash
       
-      if (!shortCode) {
+      if (!shortCode || shortCode === '') {
         return res.status(404).json({ error: 'Short code required' });
       }
 
@@ -83,7 +80,9 @@ module.exports = async (req, res) => {
         .update({ click_count: data.click_count + 1 })
         .eq('short_code', shortCode);
 
-      res.redirect(302, data.long_url);
+      // Redirect to the long URL
+      res.writeHead(302, { Location: data.long_url });
+      res.end();
     }
   } catch (error) {
     console.error('Error:', error);

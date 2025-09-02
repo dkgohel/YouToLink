@@ -28,7 +28,10 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
   const fetchUrls = useCallback(async () => {
     try {
       const response = await fetch('/api/my-urls', {
-        headers: getAuthHeaders()
+        headers: {
+          'x-user-id': user.id,
+          'Authorization': `Bearer ${user.access_token || ''}`
+        }
       });
       
       if (response.ok) {
@@ -39,7 +42,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
       console.error('Error fetching URLs:', error);
     }
     setLoading(false);
-  }, [user.id]);
+  }, [user.id, user.access_token]);
 
   useEffect(() => {
     fetchUrls();

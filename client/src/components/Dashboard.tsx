@@ -162,6 +162,12 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
                   >
                     Preview
                   </a>
+                  <Link 
+                    to={`/analytics/${url.short_code}`}
+                    className="btn-sm btn-secondary"
+                  >
+                    Analytics
+                  </Link>
                 </div>
               </div>
             ))}

@@ -13,6 +13,8 @@ const AdBanner: React.FC<AdBannerProps> = ({
   style = {},
   className = ''
 }) => {
+  const publisherId = process.env.REACT_APP_ADSENSE_PUBLISHER_ID;
+
   useEffect(() => {
     try {
       // @ts-ignore
@@ -22,12 +24,17 @@ const AdBanner: React.FC<AdBannerProps> = ({
     }
   }, []);
 
+  // Don't render ads if no publisher ID is set
+  if (!publisherId) {
+    return null;
+  }
+
   return (
     <div className={`ad-container ${className}`} style={style}>
       <ins
         className="adsbygoogle"
         style={{ display: 'block', ...style }}
-        data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
+        data-ad-client={publisherId}
         data-ad-slot={adSlot}
         data-ad-format={adFormat}
         data-full-width-responsive="true"

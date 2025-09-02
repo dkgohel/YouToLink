@@ -5,6 +5,7 @@ import Home from './components/Home';
 import Auth from './components/Auth';
 import Dashboard from './components/Dashboard';
 import Analytics from './components/Analytics';
+import AdSenseLoader from './components/AdSenseLoader';
 
 function App() {
   const [user, setUser] = useState<any>(null);
@@ -40,6 +41,7 @@ function App() {
 
   return (
     <Router>
+      <AdSenseLoader />
       <Routes>
         <Route path="/" element={<Home user={user} onLogout={handleLogout} />} />
         <Route path="/auth" element={user ? <Navigate to="/dashboard" /> : <Auth onAuth={setUser} />} />

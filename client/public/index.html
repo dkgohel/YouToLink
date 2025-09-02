@@ -8,11 +8,21 @@
     <meta name="description" content="You To Link - Free URL shortener to create short links. Shorten long URLs and generate QR codes instantly." />
     <title>You To Link - Free URL Shortener</title>
     
-    <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID" crossorigin="anonymous"></script>
+    <!-- Google AdSense - Will be loaded dynamically if publisher ID is set -->
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    
+    <script>
+      // Load AdSense script dynamically if publisher ID is available
+      if (window.REACT_APP_ADSENSE_PUBLISHER_ID) {
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${window.REACT_APP_ADSENSE_PUBLISHER_ID}`;
+        script.crossOrigin = 'anonymous';
+        document.head.appendChild(script);
+      }
+    </script>
   </body>
 </html>

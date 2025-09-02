@@ -50,6 +50,7 @@ Edit `client/.env` with your Supabase credentials:
 ```
 REACT_APP_SUPABASE_URL=your_supabase_project_url
 REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key
+REACT_APP_ADSENSE_PUBLISHER_ID=ca-pub-your_adsense_publisher_id
 ```
 
 ### 4. Supabase Database Setup
@@ -145,6 +146,7 @@ Set these in your deployment platform:
 - `SUPABASE_ANON_KEY`
 - `REACT_APP_SUPABASE_URL`
 - `REACT_APP_SUPABASE_ANON_KEY`
+- `REACT_APP_ADSENSE_PUBLISHER_ID`
 - `NODE_ENV=production`
 
 ## Security Notes

@@ -10,6 +10,7 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
   const [longUrl, setLongUrl] = useState('');
   const [customCode, setCustomCode] = useState('');
   const [shortUrl, setShortUrl] = useState('');
+  const [qrCode, setQrCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
@@ -27,6 +28,7 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
     setLoading(true);
     setError('');
     setShortUrl('');
+    setQrCode('');
 
     try {
       const response = await fetch('/api/shorten', {

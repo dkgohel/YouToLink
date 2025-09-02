@@ -1,0 +1,6 @@
+/api/* /api/:splat 200
+/auth /index.html 200
+/dashboard /index.html 200
+/analytics/* /index.html 200
+/:shortCode /api/[shortCode].js?shortCode=:shortCode 302
+/* /index.html 200

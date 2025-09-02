@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import UserHeader from './UserHeader';
 
 interface HomeProps {
   user: any;
@@ -8,37 +7,35 @@ interface HomeProps {
 }
 
 const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
+  const [mode, setMode] = useState<'single' | 'bulk'>('single');
   const [longUrl, setLongUrl] = useState('');
   const [customCode, setCustomCode] = useState('');
   const [bulkUrls, setBulkUrls] = useState('');
   const [shortUrl, setShortUrl] = useState('');
-  const [bulkResults, setBulkResults] = useState([]);
   const [qrCode, setQrCode] = useState('');
+  const [bulkResults, setBulkResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [copied, setCopied] = useState(false);
   const [error, setError] = useState('');
-  const [mode, setMode] = useState('single');
+  const [copied, setCopied] = useState(false);
 
-  const getAuthHeaders = (): Record<string, string> => {
+  const getAuthHeaders = () => {
     if (!user) return {};
     return {
-      'Authorization': `Bearer ${user.access_token}`,
-      'x-user-id': user.id
+      'x-user-id': user.id,
+      'Authorization': `Bearer ${user.access_token || ''}`
     };
   };
 
-  const handleShorten = async () => {
-    if (mode === 'single' && !longUrl) return;
-    if (mode === 'bulk' && !bulkUrls.trim()) return;
-    
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setLoading(true);
-    setCopied(false);
     setError('');
+    setShortUrl('');
     setQrCode('');
     setBulkResults([]);
-    
+
     try {
-      const body = mode === 'single' 
+      const body = mode === 'single'
         ? { longUrl, customCode: customCode || undefined }
         : { urls: bulkUrls.split('\n').filter(url => url.trim()) };
 
@@ -75,7 +72,6 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
           console.log('QR generation failed, but URL shortening succeeded');
         }
       }
-      
     } catch (error) {
       console.error('Error shortening URL:', error);
       setError('Failed to shorten URL. Please try again.');
@@ -93,169 +89,225 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
     }
   };
 
-  const downloadQR = () => {
-    const link = document.createElement('a');
-    link.download = `qr-code-${shortUrl.split('/').pop()}.png`;
-    link.href = qrCode;
-    link.click();
-  };
-
   return (
-    <div className="container">
-      {user && <UserHeader user={user} onLogout={onLogout} />}
-      
-      <div className="header">
-        <h1 className="logo">You To Link</h1>
-        <p className="tagline">Transform long URLs into short, shareable links instantly</p>
-        
-        <div className="auth-nav">
-          {user ? (
-            <Link to="/dashboard" className="nav-link">Dashboard</Link>
-          ) : (
-            <Link to="/auth" className="nav-link">Sign In</Link>
-          )}
-        </div>
-      </div>
-      
-      <div className="card">
-        {user && (
-          <div className="mode-selector">
-            <button 
-              className={`mode-btn ${mode === 'single' ? 'active' : ''}`}
-              onClick={() => setMode('single')}
-            >
-              Single URL
-            </button>
-            <button 
-              className={`mode-btn ${mode === 'bulk' ? 'active' : ''}`}
-              onClick={() => setMode('bulk')}
-            >
-              Bulk URLs
-            </button>
-          </div>
-        )}
-
-        {(mode === 'single' || !user) ? (
-          <>
-            <div className="form-group">
-              <label className="input-label">Enter your long URL</label>
-              <input
-                type="url"
-                placeholder="https://example.com"
-                value={longUrl}
-                onChange={(e) => setLongUrl(e.target.value)}
-                className="input"
-              />
-            </div>
-
-            {user && (
-              <div className="form-group">
-                <label className="input-label">Custom short code (optional)</label>
-                <div className="custom-url-container">
-                  <span className="url-prefix">u2l.in/</span>
-                  <input
-                    type="text"
-                    placeholder="my-link"
-                    value={customCode}
-                    onChange={(e) => setCustomCode(e.target.value.replace(/[^a-zA-Z0-9-_]/g, ''))}
-                    className="custom-input"
-                    maxLength={20}
-                  />
+    <div className="app-container">
+      {/* Navigation */}
+      <nav className="nav-header">
+        <div className="nav-container">
+          <Link to="/" className="logo">
+            You To Link
+          </Link>
+          
+          <div className="nav-menu">
+            {user ? (
+              <>
+                <div className="user-info">
+                  <span className="user-email">{user.email}</span>
                 </div>
-                <div className="input-help">3-20 characters: letters, numbers, hyphens, underscores</div>
-              </div>
+                <Link to="/dashboard" className="nav-link">Dashboard</Link>
+                <button onClick={onLogout} className="logout-btn">Logout</button>
+              </>
+            ) : (
+              <Link to="/auth" className="nav-link">Sign In</Link>
             )}
-          </>
-        ) : (
-          <div className="form-group">
-            <label className="input-label">Enter multiple URLs (one per line)</label>
-            <textarea
-              placeholder="https://example1.com&#10;https://example2.com&#10;https://example3.com"
-              value={bulkUrls}
-              onChange={(e) => setBulkUrls(e.target.value)}
-              className="bulk-input"
-              rows={6}
-            />
           </div>
-        )}
-        
-        {error && (
-          <div className="error-message">
-            ⚠️ {error}
-          </div>
-        )}
-        
-        <button
-          onClick={handleShorten}
-          disabled={(mode === 'single' && !longUrl) || (mode === 'bulk' && !bulkUrls.trim()) || loading}
-          className="button"
-        >
-          {loading ? 'Creating...' : `Shorten ${mode === 'bulk' ? 'URLs' : 'URL'}`}
-        </button>
-        
-        {shortUrl && mode === 'single' && (
-          <div className="result-container">
-            <div className="result-label">Your shortened URL is ready!</div>
-            <div className="result-content">
-              <div className="result-text">{shortUrl}</div>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="hero-section">
+        <h1 className="hero-title">Shorten Your URLs</h1>
+        <p className="hero-subtitle">
+          Transform long URLs into short, shareable links instantly. 
+          Track clicks, generate QR codes, and manage all your links in one place.
+        </p>
+      </section>
+
+      {/* Main Content */}
+      <main className="main-content">
+        <div className="card">
+          {user && (
+            <div className="mode-selector">
               <button 
-                onClick={() => copyToClipboard(shortUrl)} 
-                className={`copy-button ${copied ? 'copied' : ''}`}
+                className={`mode-btn ${mode === 'single' ? 'active' : ''}`}
+                onClick={() => setMode('single')}
               >
-                {copied ? 'Copied!' : 'Copy'}
+                Single URL
+              </button>
+              <button 
+                className={`mode-btn ${mode === 'bulk' ? 'active' : ''}`}
+                onClick={() => setMode('bulk')}
+              >
+                Bulk URLs
               </button>
             </div>
-            
-            {qrCode && (
-              <div className="qr-section">
-                <div className="qr-label">QR Code</div>
-                <div className="qr-container">
-                  <img src={qrCode} alt="QR Code" className="qr-image" />
-                  <button onClick={downloadQR} className="download-button">
-                    Download QR
-                  </button>
+          )}
+
+          <form onSubmit={handleSubmit}>
+            {(mode === 'single' || !user) ? (
+              <>
+                <div className="form-group">
+                  <label className="form-label">Enter your long URL</label>
+                  <input
+                    type="url"
+                    placeholder="https://example.com/your-very-long-url"
+                    value={longUrl}
+                    onChange={(e) => setLongUrl(e.target.value)}
+                    className="form-input"
+                    required
+                  />
                 </div>
+
+                {user && (
+                  <div className="form-group">
+                    <label className="form-label">Custom short code (optional)</label>
+                    <div className="url-input-group">
+                      <span className="url-prefix">u2l.in/</span>
+                      <input
+                        type="text"
+                        placeholder="my-custom-link"
+                        value={customCode}
+                        onChange={(e) => setCustomCode(e.target.value.replace(/[^a-zA-Z0-9-_]/g, ''))}
+                        className="url-input"
+                        maxLength={20}
+                      />
+                    </div>
+                    <div className="form-help">3-20 characters: letters, numbers, hyphens, underscores</div>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="form-group">
+                <label className="form-label">Enter multiple URLs (one per line)</label>
+                <textarea
+                  placeholder="https://example1.com&#10;https://example2.com&#10;https://example3.com"
+                  value={bulkUrls}
+                  onChange={(e) => setBulkUrls(e.target.value)}
+                  className="form-input form-textarea"
+                  rows={6}
+                  required
+                />
               </div>
             )}
-          </div>
-        )}
 
-        {bulkResults.length > 0 && mode === 'bulk' && (
-          <div className="bulk-results">
-            <div className="result-label">{bulkResults.length} URLs shortened successfully!</div>
-            {bulkResults.map((result: any, index) => (
-              <div key={index} className="bulk-result-item">
-                <div className="bulk-original">{result.longUrl}</div>
-                <div className="bulk-short">
-                  <span>{result.shortUrl}</span>
-                  <button onClick={() => copyToClipboard(result.shortUrl)} className="copy-button-small">
-                    Copy
-                  </button>
-                </div>
+            {error && (
+              <div className="message message-error">
+                {error}
               </div>
-            ))}
-          </div>
-        )}
-      </div>
+            )}
 
-      <div className="feature-list">
-        <div className="feature">
-          <div className="feature-icon">⚡</div>
-          <span>Instant shortening</span>
+            <button 
+              type="submit" 
+              disabled={loading || (mode === 'single' ? !longUrl : !bulkUrls)}
+              className="btn btn-primary btn-lg"
+              style={{ width: '100%' }}
+            >
+              {loading ? (
+                <>
+                  <span className="spinner"></span>
+                  {mode === 'single' ? 'Shortening...' : 'Processing URLs...'}
+                </>
+              ) : (
+                mode === 'single' ? 'Shorten URL' : 'Shorten All URLs'
+              )}
+            </button>
+          </form>
+
+          {/* Single URL Result */}
+          {shortUrl && (
+            <div className="result-section fade-in">
+              <div className="result-card">
+                <div className="short-url">{shortUrl}</div>
+                <div className="result-actions">
+                  <button 
+                    onClick={() => copyToClipboard(shortUrl)}
+                    className="btn btn-success"
+                  >
+                    {copied ? '✓ Copied!' : '📋 Copy Link'}
+                  </button>
+                  <a 
+                    href={shortUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="btn btn-secondary"
+                  >
+                    🔗 Open Link
+                  </a>
+                </div>
+                
+                {qrCode && (
+                  <div className="qr-section">
+                    <img src={qrCode} alt="QR Code" className="qr-code" />
+                    <div style={{ marginTop: '0.5rem' }}>
+                      <button 
+                        onClick={() => {
+                          const link = document.createElement('a');
+                          link.download = `qr-code-${shortUrl.split('/').pop()}.png`;
+                          link.href = qrCode;
+                          link.click();
+                        }}
+                        className="btn btn-sm btn-secondary"
+                      >
+                        📱 Download QR
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Bulk Results */}
+          {bulkResults.length > 0 && (
+            <div className="result-section fade-in">
+              <div className="card-header">
+                <h3 className="card-title">Shortened URLs ({bulkResults.length})</h3>
+              </div>
+              <div className="bulk-results">
+                {bulkResults.map((result, index) => (
+                  <div key={index} className="bulk-item">
+                    <div className="bulk-item-info">
+                      <div className="bulk-item-url">{result.shortUrl}</div>
+                      <div className="bulk-item-original">{result.longUrl}</div>
+                    </div>
+                    <button 
+                      onClick={() => copyToClipboard(result.shortUrl)}
+                      className="btn btn-sm btn-success"
+                    >
+                      📋 Copy
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
-        <div className="feature">
-          <div className="feature-icon">🎯</div>
-          <span>Custom URLs</span>
+
+        {/* Features Section */}
+        <div className="card">
+          <div className="card-header">
+            <h2 className="card-title">Why Choose You To Link?</h2>
+          </div>
+          <div className="dashboard-stats">
+            <div className="stat-card">
+              <div className="stat-number">⚡</div>
+              <div className="stat-label">Lightning Fast</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-number">📊</div>
+              <div className="stat-label">Detailed Analytics</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-number">🎯</div>
+              <div className="stat-label">Custom URLs</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-number">📱</div>
+              <div className="stat-label">QR Code Generation</div>
+            </div>
+          </div>
         </div>
-        <div className="feature">
-          <div className="feature-icon">📱</div>
-          <span>QR codes</span>
-        </div>
-        <div className="feature">
-          <div className="feature-icon">♾️</div>
-          <span>Never expires</span>
-        </div>
-      </div>
+      </main>
     </div>
   );
 };

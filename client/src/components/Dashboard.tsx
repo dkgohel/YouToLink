@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import UserHeader from './UserHeader';
 
 interface DashboardProps {
   user: any;
@@ -8,30 +7,31 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
-  const [urls, setUrls] = useState([]);
+  const [urls, setUrls] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editValue, setEditValue] = useState('');
 
-  const getAuthHeaders = useCallback((): Record<string, string> => ({
-    'Authorization': `Bearer ${user.access_token}`,
-    'x-user-id': user.id
-  }), [user]);
+  const getAuthHeaders = () => ({
+    'x-user-id': user.id,
+    'Authorization': `Bearer ${user.access_token || ''}`
+  });
 
   const fetchUrls = useCallback(async () => {
     try {
       const response = await fetch('/api/my-urls', {
         headers: getAuthHeaders()
       });
-      const data = await response.json();
+      
       if (response.ok) {
-        setUrls(data.urls);
+        const data = await response.json();
+        setUrls(data.urls || []);
       }
     } catch (error) {
       console.error('Error fetching URLs:', error);
     }
     setLoading(false);
-  }, [getAuthHeaders]);
+  }, [user.id]);
 
   useEffect(() => {
     fetchUrls();
@@ -50,15 +50,12 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
           'Content-Type': 'application/json',
           ...getAuthHeaders()
         },
-        body: JSON.stringify({ short_code: editValue })
+        body: JSON.stringify({ shortCode: editValue }),
       });
 
       if (response.ok) {
-        fetchUrls();
         setEditingId(null);
-      } else {
-        const data = await response.json();
-        alert(data.error);
+        fetchUrls();
       }
     } catch (error) {
       console.error('Error updating URL:', error);
@@ -71,7 +68,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
     try {
       const response = await fetch(`/api/urls/${id}`, {
         method: 'DELETE',
-        headers: getAuthHeaders()
+        headers: getAuthHeaders(),
       });
 
       if (response.ok) {
@@ -90,117 +87,178 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
     }
   };
 
+  const totalClicks = urls.reduce((sum, url) => sum + (url.click_count || 0), 0);
+
   if (loading) {
     return (
-      <div className="container">
-        <div className="loading">Loading your links...</div>
+      <div className="app-container">
+        <nav className="nav-header">
+          <div className="nav-container">
+            <Link to="/" className="logo">You To Link</Link>
+            <div className="nav-menu">
+              <div className="user-info">
+                <span className="user-email">{user.email}</span>
+              </div>
+              <button onClick={onLogout} className="logout-btn">Logout</button>
+            </div>
+          </div>
+        </nav>
+        <main className="main-content">
+          <div className="loading">
+            <span className="spinner"></span>
+            Loading your links...
+          </div>
+        </main>
       </div>
     );
   }
 
   return (
-    <div className="container">
-      <UserHeader user={user} onLogout={onLogout} />
-      
-      <div className="dashboard-header">
-        <div>
-          <h1 className="dashboard-title">Your Link Dashboard</h1>
+    <div className="app-container">
+      {/* Navigation */}
+      <nav className="nav-header">
+        <div className="nav-container">
+          <Link to="/" className="logo">You To Link</Link>
+          <div className="nav-menu">
+            <div className="user-info">
+              <span className="user-email">{user.email}</span>
+            </div>
+            <Link to="/" className="nav-link">Create New</Link>
+            <button onClick={onLogout} className="logout-btn">Logout</button>
+          </div>
         </div>
-        <Link to="/" className="create-new-btn">Create New URL</Link>
-      </div>
+      </nav>
 
-      <div className="dashboard-content">
+      {/* Main Content */}
+      <main className="main-content">
+        <div className="dashboard-header">
+          <h1 className="dashboard-title">My Dashboard</h1>
+          <Link to="/" className="btn btn-primary">
+            ➕ Create New URL
+          </Link>
+        </div>
+
+        {/* Stats */}
         <div className="dashboard-stats">
           <div className="stat-card">
             <div className="stat-number">{urls.length}</div>
             <div className="stat-label">Total Links</div>
           </div>
           <div className="stat-card">
-            <div className="stat-number">{urls.reduce((sum: number, url: any) => sum + url.click_count, 0)}</div>
+            <div className="stat-number">{totalClicks}</div>
             <div className="stat-label">Total Clicks</div>
           </div>
+          <div className="stat-card">
+            <div className="stat-number">{urls.filter(url => url.click_count > 0).length}</div>
+            <div className="stat-label">Active Links</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-number">{Math.round(totalClicks / Math.max(urls.length, 1))}</div>
+            <div className="stat-label">Avg. Clicks</div>
+          </div>
         </div>
 
-        <div className="urls-section">
-          <div className="section-header">
-            <h2>Your Links</h2>
-            <Link to="/" className="create-new-btn">
-              + Create New
-            </Link>
-          </div>
-
-          {urls.length === 0 ? (
-            <div className="empty-state">
-              <p>No links created yet.</p>
-              <Link to="/" className="button">
-                Create Your First Link
+        {/* URLs List */}
+        {urls.length === 0 ? (
+          <div className="card">
+            <div style={{ textAlign: 'center', padding: '3rem' }}>
+              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔗</div>
+              <h3 style={{ marginBottom: '0.5rem', color: '#64748b' }}>No URLs yet</h3>
+              <p style={{ color: '#64748b', marginBottom: '2rem' }}>
+                Create your first shortened URL to get started
+              </p>
+              <Link to="/" className="btn btn-primary">
+                Create Your First URL
               </Link>
             </div>
-          ) : (
-            <div className="urls-list">
-              {urls.map((url: any) => (
-                <div key={url.id} className="url-item">
+          </div>
+        ) : (
+          <div className="urls-grid">
+            {urls.map((url) => (
+              <div key={url.id} className="url-card">
+                <div className="url-header">
                   <div className="url-info">
-                    <div className="url-short">
+                    <h3>
                       {editingId === url.id ? (
-                        <div className="edit-container">
-                          <span className="url-prefix">localhost:5001/</span>
+                        <div className="url-input-group" style={{ marginBottom: '0.5rem' }}>
+                          <span className="url-prefix">u2l.in/</span>
                           <input
+                            type="text"
                             value={editValue}
                             onChange={(e) => setEditValue(e.target.value)}
-                            className="edit-input"
+                            className="url-input"
+                            onKeyPress={(e) => e.key === 'Enter' && handleSaveEdit(url.id)}
                           />
-                          <button onClick={() => handleSaveEdit(url.id)} className="save-btn">
-                            ✓
-                          </button>
-                          <button onClick={() => setEditingId(null)} className="cancel-btn">
-                            ✕
-                          </button>
                         </div>
                       ) : (
-                        <span className="short-link">
-                          http://localhost:5001/{url.short_code}
-                        </span>
+                        `https://u2l.in/${url.short_code}`
                       )}
-                    </div>
-                    <div className="url-long">{url.long_url}</div>
-                    <div className="url-meta">
-                      <span>{url.click_count} clicks</span>
-                      <span>Created {new Date(url.created_at).toLocaleDateString()}</span>
-                    </div>
+                    </h3>
+                    <p>{url.long_url}</p>
                   </div>
-                  <div className="url-actions">
-                    <button 
-                      onClick={() => copyToClipboard(`http://localhost:5001/${url.short_code}`)}
-                      className="action-btn copy"
-                    >
-                      Copy
-                    </button>
-                    <Link 
-                      to={`/analytics/${url.short_code}`}
-                      className="action-btn stats"
-                    >
-                      Analytics
-                    </Link>
-                    <button 
-                      onClick={() => handleEdit(url.id, url.short_code)}
-                      className="action-btn edit"
-                    >
-                      Edit
-                    </button>
-                    <button 
-                      onClick={() => handleDelete(url.id)}
-                      className="action-btn delete"
-                    >
-                      Delete
-                    </button>
+                  <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#3b82f6' }}>
+                    {url.click_count || 0}
+                    <div style={{ fontSize: '0.75rem', fontWeight: 'normal', color: '#64748b' }}>
+                      clicks
+                    </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
+
+                <div className="url-meta">
+                  <span>Created: {new Date(url.created_at).toLocaleDateString()}</span>
+                  <span>Code: {url.short_code}</span>
+                </div>
+
+                <div className="url-actions">
+                  <button 
+                    onClick={() => copyToClipboard(`https://u2l.in/${url.short_code}`)}
+                    className="btn btn-sm btn-success"
+                  >
+                    📋 Copy
+                  </button>
+                  <a 
+                    href={`https://u2l.in/${url.short_code}`} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="btn btn-sm btn-secondary"
+                  >
+                    🔗 Open
+                  </a>
+                  {editingId === url.id ? (
+                    <>
+                      <button 
+                        onClick={() => handleSaveEdit(url.id)}
+                        className="btn btn-sm btn-success"
+                      >
+                        ✓ Save
+                      </button>
+                      <button 
+                        onClick={() => setEditingId(null)}
+                        className="btn btn-sm btn-secondary"
+                      >
+                        ✕ Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <button 
+                      onClick={() => handleEdit(url.id, url.short_code)}
+                      className="btn btn-sm btn-secondary"
+                    >
+                      ✏️ Edit
+                    </button>
+                  )}
+                  <button 
+                    onClick={() => handleDelete(url.id)}
+                    className="btn btn-sm btn-danger"
+                  >
+                    🗑️ Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </main>
     </div>
   );
 };

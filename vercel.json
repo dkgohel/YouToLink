@@ -3,19 +3,42 @@
   "buildCommand": "cd client && npm ci && npm run build",
   "outputDirectory": "client/build",
   "installCommand": "npm install",
-  "framework": null,
+  "functions": {
+    "api/shorten.js": {
+      "runtime": "@vercel/node"
+    },
+    "api/my-urls.js": {
+      "runtime": "@vercel/node"
+    },
+    "api/[shortCode].js": {
+      "runtime": "@vercel/node"
+    },
+    "api/qr/[shortCode].js": {
+      "runtime": "@vercel/node"
+    }
+  },
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "source": "/api/shorten",
+      "destination": "/api/shorten.js"
     },
     {
-      "source": "/([a-zA-Z0-9]{6})",
-      "destination": "/api/[shortCode].js?shortCode=$1"
+      "source": "/api/my-urls",
+      "destination": "/api/my-urls.js"
     },
     {
-      "source": "/(.*)",
-      "destination": "/client/build/index.html"
+      "source": "/api/qr/:shortCode",
+      "destination": "/api/qr/[shortCode].js"
+    },
+    {
+      "source": "/:shortCode([a-zA-Z0-9]{6})",
+      "destination": "/api/[shortCode].js"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/client/build/index.html"
     }
   ]
 }

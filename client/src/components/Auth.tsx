@@ -50,52 +50,58 @@ const Auth: React.FC<AuthProps> = ({ onAuth }) => {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-header">
-        <Link to="/" className="back-to-home">← Back to Home</Link>
-        <div className="auth-logo">
-          <h1>You To Link</h1>
-          <p>Join thousands shortening URLs daily</p>
+    <div className="app-container">
+      {/* Navigation */}
+      <nav className="nav-header">
+        <div className="nav-container">
+          <Link to="/" className="logo">You To Link</Link>
+          <Link to="/" className="nav-link">← Back to Home</Link>
         </div>
-      </div>
+      </nav>
 
-      <div className="auth-card">
-        <div className="auth-tabs">
-          <button 
-            className={`auth-tab ${isLogin ? 'active' : ''}`}
-            onClick={() => setIsLogin(true)}
-          >
-            Sign In
-          </button>
-          <button 
-            className={`auth-tab ${!isLogin ? 'active' : ''}`}
-            onClick={() => setIsLogin(false)}
-          >
-            Sign Up
-          </button>
-        </div>
-
-        <div className="auth-content">
-          <div className="auth-welcome">
-            <h2>{isLogin ? 'Welcome back!' : 'Create account'}</h2>
-            <p>{isLogin ? 'Sign in to access your dashboard' : 'Start managing your links today'}</p>
+      {/* Auth Content */}
+      <main className="main-content" style={{ maxWidth: '400px', paddingTop: '2rem' }}>
+        <div className="card">
+          <div className="card-header" style={{ textAlign: 'center' }}>
+            <h1 className="card-title">
+              {isLogin ? 'Welcome Back!' : 'Create Account'}
+            </h1>
+            <p className="card-subtitle">
+              {isLogin ? 'Sign in to access your dashboard' : 'Start managing your links today'}
+            </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="auth-form">
-            <div className="input-group">
-              <label>Email address</label>
+          {/* Tab Selector */}
+          <div className="mode-selector">
+            <button 
+              className={`mode-btn ${isLogin ? 'active' : ''}`}
+              onClick={() => setIsLogin(true)}
+            >
+              Sign In
+            </button>
+            <button 
+              className={`mode-btn ${!isLogin ? 'active' : ''}`}
+              onClick={() => setIsLogin(false)}
+            >
+              Sign Up
+            </button>
+          </div>
+
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label className="form-label">Email address</label>
               <input
                 type="email"
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="auth-input"
+                className="form-input"
               />
             </div>
 
-            <div className="input-group">
-              <label>Password</label>
+            <div className="form-group">
+              <label className="form-label">Password</label>
               <input
                 type="password"
                 placeholder={isLogin ? "Enter your password" : "Create a password"}
@@ -103,21 +109,21 @@ const Auth: React.FC<AuthProps> = ({ onAuth }) => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
-                className="auth-input"
+                className="form-input"
               />
               {!isLogin && (
-                <div className="input-hint">Minimum 6 characters</div>
+                <div className="form-help">Minimum 6 characters</div>
               )}
             </div>
 
             {error && (
-              <div className="auth-error">
+              <div className="message message-error">
                 {error}
               </div>
             )}
 
             {message && (
-              <div className="auth-success">
+              <div className="message message-success">
                 {message}
               </div>
             )}
@@ -125,48 +131,59 @@ const Auth: React.FC<AuthProps> = ({ onAuth }) => {
             <button 
               type="submit" 
               disabled={loading || !email || !password}
-              className="auth-button"
+              className="btn btn-primary btn-lg"
+              style={{ width: '100%' }}
             >
               {loading ? (
-                <span className="loading-spinner">
-                  <span></span>
+                <>
+                  <span className="spinner"></span>
                   {isLogin ? 'Signing in...' : 'Creating account...'}
-                </span>
+                </>
               ) : (
                 isLogin ? 'Sign In' : 'Create Account'
               )}
             </button>
           </form>
 
-          <div className="auth-footer">
-            <p>
+          <div style={{ textAlign: 'center', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #e2e8f0' }}>
+            <p style={{ color: '#64748b', fontSize: '0.875rem' }}>
               {isLogin ? "Don't have an account? " : "Already have an account? "}
               <button 
                 type="button"
                 onClick={() => setIsLogin(!isLogin)}
-                className="auth-switch"
+                style={{ 
+                  background: 'none', 
+                  border: 'none', 
+                  color: '#3b82f6', 
+                  fontWeight: '600', 
+                  cursor: 'pointer',
+                  textDecoration: 'underline'
+                }}
               >
                 {isLogin ? 'Sign up' : 'Sign in'}
               </button>
             </p>
           </div>
 
-          <div className="auth-features">
-            <div className="feature-item">
-              <span className="feature-icon">📊</span>
-              <span>Analytics Dashboard</span>
-            </div>
-            <div className="feature-item">
-              <span className="feature-icon">🎯</span>
-              <span>Custom Short URLs</span>
-            </div>
-            <div className="feature-item">
-              <span className="feature-icon">📱</span>
-              <span>QR Code Generation</span>
+          {/* Features */}
+          <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid #e2e8f0' }}>
+            <div className="dashboard-stats" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>📊</div>
+                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Analytics</div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>🎯</div>
+                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Custom URLs</div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>📱</div>
+                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>QR Codes</div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 };

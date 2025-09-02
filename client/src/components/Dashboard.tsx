@@ -38,10 +38,6 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
     fetchUrls();
   }, [fetchUrls]);
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-  };
-
   const handleEdit = (id: number, currentCode: string) => {
     setEditingId(id);
     setEditValue(currentCode);

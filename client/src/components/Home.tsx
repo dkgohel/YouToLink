@@ -24,7 +24,7 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
 
-  const getAuthHeaders = () => {
+  const getAuthHeaders = (): Record<string, string> => {
     if (!user) return {};
     return {
       'x-user-id': user.id,

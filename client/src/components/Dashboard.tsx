@@ -20,7 +20,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editValue, setEditValue] = useState('');
 
-  const getAuthHeaders = () => ({
+  const getAuthHeaders = (): Record<string, string> => ({
     'x-user-id': user.id,
     'Authorization': `Bearer ${user.access_token || ''}`
   });

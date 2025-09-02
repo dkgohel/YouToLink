@@ -6,9 +6,27 @@ interface AnalyticsProps {
   onLogout: () => void;
 }
 
+interface AnalyticsData {
+  url: {
+    id: number;
+    short_code: string;
+    long_url: string;
+    created_at: string;
+  };
+  analytics: {
+    totalClicks: number;
+    uniqueClicks: number;
+    clicksByDate: Record<string, number>;
+    clicksByCountry: Record<string, number>;
+    clicksByDevice: Record<string, number>;
+    clicksByBrowser: Record<string, number>;
+    recentClicks: any[];
+  };
+}
+
 const Analytics: React.FC<AnalyticsProps> = ({ user, onLogout }) => {
   const { shortCode } = useParams<{ shortCode: string }>();
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 

@@ -37,7 +37,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home user={user} />} />
-        <Route path="/auth" element={user ? <Navigate to="/dashboard" /> : <Auth />} />
+        <Route path="/auth" element={user ? <Navigate to="/dashboard" /> : <Auth onAuth={setUser} />} />
         <Route path="/dashboard" element={user ? <Dashboard user={user} /> : <Navigate to="/auth" />} />
         <Route path="/analytics/:shortCode" element={user ? <Analytics user={user} /> : <Navigate to="/auth" />} />
       </Routes>

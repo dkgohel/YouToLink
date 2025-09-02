@@ -25,31 +25,11 @@
       "dest": "/client/build/static/$1"
     },
     {
-      "src": "/manifest.json",
-      "dest": "/client/build/manifest.json"
-    },
-    {
-      "src": "/favicon.ico",
-      "dest": "/client/build/favicon.ico"
-    },
-    {
-      "src": "/auth",
-      "dest": "/client/build/index.html"
-    },
-    {
-      "src": "/dashboard",
-      "dest": "/client/build/index.html"
-    },
-    {
-      "src": "/analytics/(.*)",
-      "dest": "/client/build/index.html"
-    },
-    {
       "src": "/([a-zA-Z0-9]{6})$",
       "dest": "/api/[shortCode].js?shortCode=$1"
     },
     {
-      "src": "/",
+      "src": "/(.*)",
       "dest": "/client/build/index.html"
     }
   ]

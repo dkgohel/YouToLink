@@ -6,20 +6,10 @@ interface HomeProps {
   onLogout: () => void;
 }
 
-interface BulkResult {
-  longUrl: string;
-  shortUrl: string;
-  shortCode: string;
-}
-
 const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
-  const [mode, setMode] = useState<'single' | 'bulk'>('single');
   const [longUrl, setLongUrl] = useState('');
   const [customCode, setCustomCode] = useState('');
-  const [bulkUrls, setBulkUrls] = useState('');
   const [shortUrl, setShortUrl] = useState('');
-  const [qrCode, setQrCode] = useState('');
-  const [bulkResults, setBulkResults] = useState<BulkResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
@@ -37,21 +27,18 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
     setLoading(true);
     setError('');
     setShortUrl('');
-    setQrCode('');
-    setBulkResults([]);
 
     try {
-      const body = mode === 'single'
-        ? { longUrl, customCode: customCode || undefined }
-        : { urls: bulkUrls.split('\n').filter(url => url.trim()) };
-
       const response = await fetch('/api/shorten', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           ...getAuthHeaders()
         },
-        body: JSON.stringify(body),
+        body: JSON.stringify({ 
+          longUrl, 
+          customCode: customCode || undefined 
+        }),
       });
       
       const data = await response.json();
@@ -61,23 +48,7 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
         return;
       }
       
-      if (mode === 'bulk') {
-        setBulkResults(data.results);
-      } else {
-        setShortUrl(data.shortUrl);
-        
-        // Generate QR code
-        try {
-          const shortCode = data.shortUrl.split('/').pop();
-          const qrResponse = await fetch(`/api/qr/${shortCode}`);
-          if (qrResponse.ok) {
-            const qrData = await qrResponse.json();
-            setQrCode(qrData.qrCode);
-          }
-        } catch (qrError) {
-          console.log('QR generation failed, but URL shortening succeeded');
-        }
-      }
+      setShortUrl(data.shortUrl);
     } catch (error) {
       console.error('Error shortening URL:', error);
       setError('Failed to shorten URL. Please try again.');
@@ -99,182 +70,157 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
     <div>
       {/* Header */}
       <header className="header">
-        <div className="header-content">
-          <Link to="/" className="logo">You To Link</Link>
+        <Link to="/" className="logo">YOUTOLINK</Link>
+        
+        <div className="nav-menu">
+          <div className="help-icon">?</div>
           
-          <div className="nav-items">
-            {user ? (
-              <>
-                <div className="user-menu">
-                  <span className="user-email">{user.email}</span>
-                  <button onClick={onLogout} className="logout-btn">Logout</button>
-                </div>
-                <Link to="/dashboard" className="nav-link">My URLs</Link>
-              </>
-            ) : (
-              <Link to="/auth" className="nav-link">Sign In</Link>
-            )}
-          </div>
+          {user ? (
+            <>
+              <Link to="/dashboard" className="nav-link">My URLs</Link>
+              <div className="user-menu">
+                <span className="user-email">{user.email}</span>
+                <button onClick={onLogout} className="logout-btn">Logout</button>
+              </div>
+            </>
+          ) : (
+            <div className="auth-buttons">
+              <Link to="/auth" className="btn-signup">Sign Up</Link>
+              <Link to="/auth" className="btn-signin">Sign In</Link>
+            </div>
+          )}
         </div>
       </header>
 
       {/* Main Content */}
-      <div className="container">
-        <div className="hero">
-          <h1>Shorten Your Loooong Links :)</h1>
-          <p>You To Link is a free tool to shorten URLs and generate short links. URL shortener allows to create a shortened link making it easy to share.</p>
-        </div>
-
-        <div className="main-card">
-          {user && (
-            <div className="mode-tabs">
-              <button 
-                className={`mode-tab ${mode === 'single' ? 'active' : ''}`}
-                onClick={() => setMode('single')}
-              >
-                Single URL
-              </button>
-              <button 
-                className={`mode-tab ${mode === 'bulk' ? 'active' : ''}`}
-                onClick={() => setMode('bulk')}
-              >
-                Bulk Shorten
-              </button>
+      <div className="main-container">
+        {/* Left Side - Form */}
+        <div className="form-section">
+          <div className="form-card">
+            <div className="form-header">
+              <span className="form-icon">🔗</span>
+              <h2 className="form-title">Shorten a long URL</h2>
             </div>
-          )}
 
-          <form onSubmit={handleSubmit}>
-            {(mode === 'single' || !user) ? (
-              <>
-                <div className="form-group">
-                  <label className="form-label">Paste the URL to be shortened</label>
-                  <input
-                    type="url"
-                    placeholder="Enter the link here"
-                    value={longUrl}
-                    onChange={(e) => setLongUrl(e.target.value)}
-                    className="form-input"
-                    required
-                  />
-                </div>
-
-                {user && (
-                  <div className="form-group">
-                    <label className="form-label">Customize your link</label>
-                    <div className="url-group">
-                      <span className="url-prefix">u2l.in/</span>
-                      <input
-                        type="text"
-                        placeholder="Enter custom name (optional)"
-                        value={customCode}
-                        onChange={(e) => setCustomCode(e.target.value.replace(/[^a-zA-Z0-9-_]/g, ''))}
-                        className="url-input"
-                        maxLength={20}
-                      />
-                    </div>
-                  </div>
-                )}
-              </>
-            ) : (
+            <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label className="form-label">Enter multiple URLs (one per line)</label>
-                <textarea
-                  placeholder="https://example1.com&#10;https://example2.com&#10;https://example3.com"
-                  value={bulkUrls}
-                  onChange={(e) => setBulkUrls(e.target.value)}
-                  className="form-input textarea"
-                  rows={6}
+                <label className="form-label">
+                  <span className="label-icon">🔗</span>
+                  Enter long link here
+                </label>
+                <input
+                  type="url"
+                  placeholder="Enter long link here"
+                  value={longUrl}
+                  onChange={(e) => setLongUrl(e.target.value)}
+                  className="form-input"
                   required
                 />
               </div>
-            )}
 
-            {error && (
-              <div className="message message-error">
-                {error}
-              </div>
-            )}
-
-            <button 
-              type="submit" 
-              disabled={loading || (mode === 'single' ? !longUrl : !bulkUrls)}
-              className="btn btn-primary btn-lg"
-            >
-              {loading ? (
-                <>
-                  <span className="spinner"></span>
-                  {mode === 'single' ? 'Shortening...' : 'Processing...'}
-                </>
-              ) : (
-                'Shorten URL!'
-              )}
-            </button>
-          </form>
-
-          {/* Single URL Result */}
-          {shortUrl && (
-            <div className="result">
-              <div className="short-url">{shortUrl}</div>
-              <div className="result-actions">
-                <button 
-                  onClick={() => copyToClipboard(shortUrl)}
-                  className="btn btn-success"
-                >
-                  {copied ? '✓ Copied!' : 'Copy'}
-                </button>
-                <a 
-                  href={shortUrl} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="btn btn-secondary"
-                >
-                  Preview
-                </a>
-              </div>
-              
-              {qrCode && (
-                <div className="qr-section">
-                  <img src={qrCode} alt="QR Code" className="qr-code" />
-                  <div>
-                    <button 
-                      onClick={() => {
-                        const link = document.createElement('a');
-                        link.download = `qr-code-${shortUrl.split('/').pop()}.png`;
-                        link.href = qrCode;
-                        link.click();
-                      }}
-                      className="btn btn-sm btn-secondary"
-                    >
-                      Download QR
-                    </button>
+              {user && (
+                <div className="custom-section">
+                  <label className="form-label">
+                    <span className="label-icon">✏️</span>
+                    Customize your link
+                  </label>
+                  <div className="custom-inputs">
+                    <select className="domain-select">
+                      <option>u2l.in</option>
+                    </select>
+                    <input
+                      type="text"
+                      placeholder="Enter alias"
+                      value={customCode}
+                      onChange={(e) => setCustomCode(e.target.value.replace(/[^a-zA-Z0-9-_]/g, ''))}
+                      className="alias-input"
+                      maxLength={20}
+                    />
                   </div>
                 </div>
               )}
-            </div>
-          )}
 
-          {/* Bulk Results */}
-          {bulkResults.length > 0 && (
-            <div className="bulk-results">
-              <h3 style={{ marginBottom: '20px', color: '#333' }}>
-                Shortened URLs ({bulkResults.length})
-              </h3>
-              {bulkResults.map((result, index) => (
-                <div key={index} className="bulk-item">
-                  <div className="bulk-info">
-                    <div className="bulk-short">{result.shortUrl}</div>
-                    <div className="bulk-original">{result.longUrl}</div>
-                  </div>
+              {error && (
+                <div className="message message-error">
+                  {error}
+                </div>
+              )}
+
+              <button 
+                type="submit" 
+                disabled={loading || !longUrl}
+                className="shorten-btn"
+              >
+                {loading ? (
+                  <>
+                    <span className="spinner"></span>
+                    Shortening...
+                  </>
+                ) : (
+                  'Shorten URL'
+                )}
+              </button>
+            </form>
+
+            {/* Result */}
+            {shortUrl && (
+              <div className="result-section">
+                <div className="result-url">{shortUrl}</div>
+                <div className="result-actions">
                   <button 
-                    onClick={() => copyToClipboard(result.shortUrl)}
-                    className="btn btn-sm btn-success"
+                    onClick={() => copyToClipboard(shortUrl)}
+                    className="btn-copy"
                   >
-                    Copy
+                    {copied ? '✓ Copied!' : 'Copy'}
                   </button>
+                  <a 
+                    href={shortUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="btn-preview"
+                  >
+                    Preview
+                  </a>
                 </div>
-              ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Right Side - Content */}
+        <div className="content-section">
+          <h1 className="main-title">The Original URL Shortener</h1>
+          <p className="main-subtitle">Create shorter URLs with YouToLink.</p>
+          
+          <p className="description">
+            Want more out of your link shortener? Track link analytics, use 
+            branded domains for fully custom links, and manage your links 
+            with our paid plans.
+          </p>
+
+          <div className="cta-buttons">
+            <Link to="/auth" className="btn-plans">View Plans</Link>
+            <Link to="/auth" className="btn-account">Create Free Account</Link>
+          </div>
+
+          <div className="features-list">
+            <div className="feature-item">
+              <span className="feature-icon">📊</span>
+              <span>Detailed Link Analytics</span>
             </div>
-          )}
+            <div className="feature-item">
+              <span className="feature-icon">🔗</span>
+              <span>Bulk Short URLs</span>
+            </div>
+            <div className="feature-item">
+              <span className="feature-icon">🌐</span>
+              <span>Fully Branded Domains</span>
+            </div>
+            <div className="feature-item">
+              <span className="feature-icon">⚙️</span>
+              <span>Link Management Features</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -13,9 +13,11 @@ const AdBanner: React.FC<AdBannerProps> = ({
   style = {},
   className = ''
 }) => {
-  const publisherId = process.env.REACT_APP_ADSENSE_PUBLISHER_ID;
+  // Temporarily hardcode to test - will revert after testing
+  const publisherId = process.env.REACT_APP_ADSENSE_PUBLISHER_ID || 'ca-pub-1534245302037029';
 
   useEffect(() => {
+    console.log('AdBanner Debug:', { publisherId, adSlot, envVar: process.env.REACT_APP_ADSENSE_PUBLISHER_ID });
     try {
       // @ts-ignore
       (window.adsbygoogle = window.adsbygoogle || []).push({});
@@ -24,15 +26,11 @@ const AdBanner: React.FC<AdBannerProps> = ({
     }
   }, [publisherId, adSlot]);
 
-  if (!publisherId) {
-    return null;
-  }
-
   return (
     <div className={`ad-container ${className}`} style={style}>
-      {/* Temporary debug info */}
-      <div style={{ fontSize: '12px', color: '#666', marginBottom: '5px' }}>
-        Ad Space (ID: {adSlot})
+      {/* Debug info */}
+      <div style={{ fontSize: '12px', color: '#666', marginBottom: '5px', padding: '5px', backgroundColor: '#f0f0f0' }}>
+        Ad Space (ID: {adSlot}) - Publisher: {publisherId ? 'Found' : 'Missing'}
       </div>
       <ins
         className="adsbygoogle"

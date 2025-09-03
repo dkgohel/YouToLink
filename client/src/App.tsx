@@ -5,6 +5,7 @@ import Home from './components/Home';
 import Auth from './components/Auth';
 import Dashboard from './components/Dashboard';
 import Analytics from './components/Analytics';
+import Privacy from './components/Privacy';
 import AdSenseLoader from './components/AdSenseLoader';
 
 function App() {
@@ -47,6 +48,7 @@ function App() {
         <Route path="/auth" element={user ? <Navigate to="/dashboard" /> : <Auth onAuth={setUser} />} />
         <Route path="/dashboard" element={user ? <Dashboard user={user} onLogout={handleLogout} /> : <Navigate to="/auth" />} />
         <Route path="/analytics/:shortCode" element={user ? <Analytics user={user} onLogout={handleLogout} /> : <Navigate to="/auth" />} />
+        <Route path="/privacy" element={<Privacy />} />
       </Routes>
     </Router>
   );

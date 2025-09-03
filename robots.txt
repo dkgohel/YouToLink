@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://u2l.in/sitemap.xml

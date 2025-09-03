@@ -113,7 +113,7 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
       <div className="main-container">
         {/* Top Banner Ad */}
         <AdBanner 
-          adSlot="1234567890"
+          adSlot="8338924243"
           className="ad-container"
           style={{ minHeight: '90px', width: '100%', marginBottom: '40px' }}
         />
@@ -233,7 +233,7 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
           {/* Result Ad */}
           {shortUrl && (
             <AdBanner 
-              adSlot="0987654321"
+              adSlot="8338924243"
               className="ad-container-result"
               style={{ minHeight: '250px' }}
             />

@@ -22,9 +22,8 @@ const AdBanner: React.FC<AdBannerProps> = ({
     } catch (error) {
       console.log('AdSense error:', error);
     }
-  }, []);
+  }, [publisherId, adSlot]);
 
-  // Don't render ads if no publisher ID is set
   if (!publisherId) {
     return null;
   }

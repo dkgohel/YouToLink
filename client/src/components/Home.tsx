@@ -109,7 +109,7 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
         </div>
       </header>
 
-      {/* Top Banner Ad - Outside main container for better mobile visibility */}
+      {/* Top Banner Ad */}
       <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '20px' }}>
         <AdBanner 
           adSlot="8338924243"
@@ -117,9 +117,7 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
           style={{ 
             minHeight: '90px', 
             width: '100%', 
-            marginBottom: '20px',
-            border: '2px dashed #ccc',
-            backgroundColor: '#f9f9f9'
+            marginBottom: '20px'
           }}
         />
       </div>

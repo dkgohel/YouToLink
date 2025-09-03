@@ -109,14 +109,23 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
         </div>
       </header>
 
-      {/* Main Content */}
-      <div className="main-container">
-        {/* Top Banner Ad */}
+      {/* Top Banner Ad - Outside main container for better mobile visibility */}
+      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '20px' }}>
         <AdBanner 
           adSlot="8338924243"
           className="ad-container"
-          style={{ minHeight: '90px', width: '100%', marginBottom: '40px' }}
+          style={{ 
+            minHeight: '90px', 
+            width: '100%', 
+            marginBottom: '20px',
+            border: '2px dashed #ccc',
+            backgroundColor: '#f9f9f9'
+          }}
         />
+      </div>
+
+      {/* Main Content */}
+      <div className="main-container">
 
         {/* Left Side - Form */}
         <div className="form-section">

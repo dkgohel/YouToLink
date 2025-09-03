@@ -30,6 +30,10 @@ const AdBanner: React.FC<AdBannerProps> = ({
 
   return (
     <div className={`ad-container ${className}`} style={style}>
+      {/* Temporary debug info */}
+      <div style={{ fontSize: '12px', color: '#666', marginBottom: '5px' }}>
+        Ad Space (ID: {adSlot})
+      </div>
       <ins
         className="adsbygoogle"
         style={{ display: 'block', ...style }}

@@ -8,9 +8,41 @@
     <meta name="description" content="You To Link - Free URL shortener to create short links. Shorten long URLs and generate QR codes instantly." />
     <title>You To Link - Free URL Shortener</title>
     
+    <!-- Google CMP for GDPR Consent -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('consent', 'default', {
+        'ad_storage': 'denied',
+        'analytics_storage': 'denied'
+      });
+      gtag('js', new Date());
+    </script>
+    
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1534245302037029"
          crossorigin="anonymous"></script>
+         
+    <!-- Google Funding Choices (CMP) -->
+    <script async src="https://fundingchoicesmessages.google.com/i/pub-1534245302037029?ers=1" nonce=""></script>
+    <script nonce="">
+      (function() {
+        function signalGooglefcPresent() {
+          if (!window.frames['googlefcPresent']) {
+            if (document.body) {
+              const iframe = document.createElement('iframe');
+              iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;';
+              iframe.style.display = 'none';
+              iframe.name = 'googlefcPresent';
+              document.body.appendChild(iframe);
+            } else {
+              setTimeout(signalGooglefcPresent, 0);
+            }
+          }
+        }
+        signalGooglefcPresent();
+      })();
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

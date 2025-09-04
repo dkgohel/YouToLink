@@ -146,6 +146,7 @@ const Auth: React.FC<AuthProps> = ({ onAuth }) => {
             </button>
           </p>
         </div>
+        </div>
       </div>
     </>
   );

@@ -1,8 +1,11 @@
 import React from 'react';
+import Navbar from './Navbar';
 
 const Privacy: React.FC = () => {
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', lineHeight: '1.6' }}>
+    <>
+      <Navbar />
+      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', lineHeight: '1.6' }}>
       <h1>Privacy Policy</h1>
       <p><strong>Last updated:</strong> September 3, 2025</p>
       
@@ -59,6 +62,7 @@ const Privacy: React.FC = () => {
       <h2>Changes to This Policy</h2>
       <p>We may update this privacy policy from time to time. We will notify you of any changes by posting the new policy on this page.</p>
     </div>
+    </>
   );
 };
 

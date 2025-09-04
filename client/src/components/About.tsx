@@ -1,18 +1,21 @@
 import React from 'react';
+import Navbar from './Navbar';
 
 const About: React.FC = () => {
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', lineHeight: '1.6' }}>
-      <h1>About YouToLink</h1>
+    <>
+      <Navbar />
+      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', lineHeight: '1.6' }}>
+      <h1>About U2L</h1>
       
-      <h2>What is YouToLink?</h2>
+      <h2>What is U2L?</h2>
       <p>
-        YouToLink (u2l.in) is a free, fast, and reliable URL shortening service that helps you create 
+        U2L (u2l.in) is a free, fast, and reliable URL shortening service that helps you create 
         short, memorable links from long URLs. Whether you're sharing links on social media, in emails, 
-        or anywhere space is limited, YouToLink makes your URLs clean and professional.
+        or anywhere space is limited, U2L makes your URLs clean and professional.
       </p>
 
-      <h2>Why Choose YouToLink?</h2>
+      <h2>Why Choose U2L?</h2>
       <ul>
         <li><strong>Fast & Reliable:</strong> Lightning-fast redirects with 99.9% uptime</li>
         <li><strong>Custom Aliases:</strong> Create personalized short links with custom codes</li>
@@ -72,6 +75,7 @@ const About: React.FC = () => {
         Ready to start shortening URLs? <a href="/" style={{ color: '#0066cc' }}>Create your first short link</a> now!
       </p>
     </div>
+    </>
   );
 };
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import AdBanner from './AdBanner';
+import Navbar from './Navbar';
 
 interface HomeProps {
   user: any;
@@ -85,35 +86,7 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
 
   return (
     <div className={user?.subscription === 'premium' ? 'premium-user' : ''}>
-      {/* Header */}
-      <header className="header">
-        <Link to="/" className="logo">YOUTOLINK</Link>
-        
-        <div className="nav-menu">
-          <div className="nav-links">
-            <Link to="/about" className="nav-link">About</Link>
-            <Link to="/privacy" className="nav-link">Privacy</Link>
-            <Link to="/terms" className="nav-link">Terms</Link>
-          </div>
-          
-          <div className="help-icon">?</div>
-          
-          {user ? (
-            <>
-              <Link to="/dashboard" className="nav-link">My URLs</Link>
-              <div className="user-menu">
-                <span className="user-email">{user.email}</span>
-                <button onClick={onLogout} className="logout-btn">Logout</button>
-              </div>
-            </>
-          ) : (
-            <div className="auth-buttons">
-              <Link to="/auth" className="btn-signup">Sign Up</Link>
-              <Link to="/auth" className="btn-signin">Sign In</Link>
-            </div>
-          )}
-        </div>
-      </header>
+      <Navbar user={user} onLogout={onLogout} />
 
       {/* Top Banner Ad */}
       <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '20px' }}>
@@ -256,7 +229,7 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
         {/* Right Side - Content */}
         <div className="content-section">
           <h1 className="main-title">The Original URL Shortener</h1>
-          <p className="main-subtitle">Create shorter URLs with YouToLink.</p>
+          <p className="main-subtitle">Create shorter URLs with U2L.</p>
           
           <p className="description">
             Want more out of your link shortener? Track link analytics, use 

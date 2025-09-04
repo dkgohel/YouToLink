@@ -1,20 +1,23 @@
 import React from 'react';
+import Navbar from './Navbar';
 
 const Terms: React.FC = () => {
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', lineHeight: '1.6' }}>
+    <>
+      <Navbar />
+      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', lineHeight: '1.6' }}>
       <h1>Terms of Service</h1>
       <p><strong>Last updated:</strong> September 4, 2025</p>
       
       <h2>1. Acceptance of Terms</h2>
       <p>
-        By using YouToLink (u2l.in), you agree to be bound by these Terms of Service. 
+        By using U2L (u2l.in), you agree to be bound by these Terms of Service. 
         If you do not agree to these terms, please do not use our service.
       </p>
 
       <h2>2. Description of Service</h2>
       <p>
-        YouToLink is a URL shortening service that allows users to create shortened 
+        U2L is a URL shortening service that allows users to create shortened 
         versions of long URLs. We also provide analytics, QR code generation, and 
         link management features.
       </p>
@@ -114,10 +117,11 @@ const Terms: React.FC = () => {
       </p>
 
       <p style={{ marginTop: '40px', fontSize: '14px', color: '#666' }}>
-        By using YouToLink, you acknowledge that you have read, understood, and 
+        By using U2L, you acknowledge that you have read, understood, and 
         agree to be bound by these Terms of Service.
       </p>
     </div>
+    </>
   );
 };
 

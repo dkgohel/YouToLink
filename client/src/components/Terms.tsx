@@ -23,7 +23,7 @@ const Terms: React.FC = () => {
       </p>
 
       <h2>3. Acceptable Use</h2>
-      <p>You agree NOT to use YouToLink for:</p>
+      <p>You agree NOT to use U2L for:</p>
       <ul>
         <li>Illegal activities or content</li>
         <li>Spam, phishing, or malicious links</li>
@@ -80,21 +80,21 @@ const Terms: React.FC = () => {
 
       <h2>10. Disclaimer of Warranties</h2>
       <p>
-        YouToLink is provided "as is" without warranties of any kind. We do not 
+        U2L is provided "as is" without warranties of any kind. We do not 
         guarantee the accuracy, reliability, or availability of the service or the 
         content accessed through shortened links.
       </p>
 
       <h2>11. Limitation of Liability</h2>
       <p>
-        To the maximum extent permitted by law, YouToLink shall not be liable for 
+        To the maximum extent permitted by law, U2L shall not be liable for 
         any indirect, incidental, special, or consequential damages arising from 
         your use of the service.
       </p>
 
       <h2>12. Indemnification</h2>
       <p>
-        You agree to indemnify and hold harmless YouToLink from any claims, damages, 
+        You agree to indemnify and hold harmless U2L from any claims, damages, 
         or expenses arising from your use of the service or violation of these terms.
       </p>
 

@@ -10,7 +10,7 @@ const Privacy: React.FC = () => {
       <p><strong>Last updated:</strong> September 3, 2025</p>
       
       <h2>Information We Collect</h2>
-      <p>When you use YouToLink (u2l.in), we may collect:</p>
+      <p>When you use U2L (u2l.in), we may collect:</p>
       <ul>
         <li>URLs you submit for shortening</li>
         <li>Click analytics and usage statistics</li>

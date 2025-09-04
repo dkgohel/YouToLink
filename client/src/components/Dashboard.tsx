@@ -56,7 +56,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
     return (
       <div className="dashboard-container">
         <div className="dashboard-header">
-          <Link to="/" className="dashboard-logo">YOUTOLINK</Link>
+          <Link to="/" className="dashboard-logo">U2L</Link>
           <div className="user-menu">
             <span className="user-email">{user.email}</span>
             <button onClick={onLogout} className="logout-btn">Logout</button>
@@ -75,7 +75,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
   return (
     <div className={`dashboard-container ${user?.subscription === 'premium' ? 'premium-user' : ''}`}>
       <div className="dashboard-header">
-        <Link to="/" className="dashboard-logo">YOUTOLINK</Link>
+        <Link to="/" className="dashboard-logo">U2L</Link>
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
           <div className="user-menu">
             <span className="user-email">{user.email}</span>

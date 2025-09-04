@@ -57,7 +57,7 @@ const About: React.FC = () => {
 
       <h2>Security & Privacy</h2>
       <p>
-        We take your privacy seriously. YouToLink uses secure HTTPS connections, 
+        We take your privacy seriously. U2L uses secure HTTPS connections, 
         doesn't store personal information unnecessarily, and complies with GDPR 
         regulations. All shortened URLs are scanned for malicious content to ensure 
         user safety.

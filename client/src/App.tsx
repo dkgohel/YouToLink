@@ -6,6 +6,8 @@ import Auth from './components/Auth';
 import Dashboard from './components/Dashboard';
 import Analytics from './components/Analytics';
 import Privacy from './components/Privacy';
+import About from './components/About';
+import Terms from './components/Terms';
 import AdSenseLoader from './components/AdSenseLoader';
 
 function App() {
@@ -49,6 +51,8 @@ function App() {
         <Route path="/dashboard" element={user ? <Dashboard user={user} onLogout={handleLogout} /> : <Navigate to="/auth" />} />
         <Route path="/analytics/:shortCode" element={user ? <Analytics user={user} onLogout={handleLogout} /> : <Navigate to="/auth" />} />
         <Route path="/privacy" element={<Privacy />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/terms" element={<Terms />} />
       </Routes>
     </Router>
   );

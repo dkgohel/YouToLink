@@ -4,21 +4,33 @@ export default function handler(req, res) {
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://u2l.in/</loc>
-    <lastmod>2025-09-03</lastmod>
+    <lastmod>2025-09-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://u2l.in/dashboard</loc>
-    <lastmod>2025-09-03</lastmod>
-    <changefreq>weekly</changefreq>
+    <loc>https://u2l.in/about</loc>
+    <lastmod>2025-09-04</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://u2l.in/analytics</loc>
-    <lastmod>2025-09-03</lastmod>
-    <changefreq>weekly</changefreq>
+    <loc>https://u2l.in/privacy</loc>
+    <lastmod>2025-09-04</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://u2l.in/terms</loc>
+    <lastmod>2025-09-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://u2l.in/dashboard</loc>
+    <lastmod>2025-09-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
   </url>
 </urlset>`);
 }

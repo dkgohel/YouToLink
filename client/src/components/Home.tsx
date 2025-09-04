@@ -90,6 +90,12 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
         <Link to="/" className="logo">YOUTOLINK</Link>
         
         <div className="nav-menu">
+          <div className="nav-links">
+            <Link to="/about" className="nav-link">About</Link>
+            <Link to="/privacy" className="nav-link">Privacy</Link>
+            <Link to="/terms" className="nav-link">Terms</Link>
+          </div>
+          
           <div className="help-icon">?</div>
           
           {user ? (

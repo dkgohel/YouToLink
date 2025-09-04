@@ -35,6 +35,27 @@ body {
   gap: 32px;
 }
 
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-links .nav-link {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.nav-links .nav-link:hover {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
 .nav-link {
   color: rgba(255, 255, 255, 0.9);
   text-decoration: none;
@@ -678,6 +699,17 @@ body {
   
   .nav-menu {
     gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .nav-links {
+    gap: 12px;
+  }
+  
+  .nav-links .nav-link {
+    font-size: 13px;
+    padding: 6px 10px;
   }
   
   .main-title {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../supabase';
+import Navbar from './Navbar';
 
 interface AuthProps {
   onAuth: (user: any) => void;
@@ -50,19 +51,18 @@ const Auth: React.FC<AuthProps> = ({ onAuth }) => {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <div className="auth-header">
-          <Link to="/" className="logo" style={{ marginBottom: '24px', display: 'block' }}>
-            You To Link
-          </Link>
-          <h1 className="auth-title">
-            {isLogin ? 'Welcome Back!' : 'Create Account'}
-          </h1>
-          <p className="auth-subtitle">
-            {isLogin ? 'Sign in to manage your shortened URLs' : 'Join thousands of users shortening URLs'}
-          </p>
-        </div>
+    <>
+      <Navbar />
+      <div className="auth-container">
+        <div className="auth-card">
+          <div className="auth-header">
+            <h1 className="auth-title">
+              {isLogin ? 'Welcome Back!' : 'Create Account'}
+            </h1>
+            <p className="auth-subtitle">
+              {isLogin ? 'Sign in to manage your shortened URLs' : 'Join thousands of users shortening URLs'}
+            </p>
+          </div>
 
         {/* Tab Selector */}
         <div className="mode-tabs">
@@ -147,7 +147,7 @@ const Auth: React.FC<AuthProps> = ({ onAuth }) => {
           </p>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

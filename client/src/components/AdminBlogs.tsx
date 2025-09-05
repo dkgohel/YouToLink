@@ -37,7 +37,7 @@ const AdminBlogs: React.FC<AdminBlogsProps> = ({ user, onLogout }) => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
 
-      const response = await fetch('/api/blogs/admin', {
+      const response = await fetch('/api/blogs-admin', {
         headers: {
           'Authorization': `Bearer ${session.access_token}`
         }
@@ -59,7 +59,7 @@ const AdminBlogs: React.FC<AdminBlogsProps> = ({ user, onLogout }) => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
 
-      const response = await fetch('/api/blogs/admin', {
+      const response = await fetch('/api/blogs-admin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -246,6 +246,7 @@ const BlogPost: React.FC = () => {
           }}>
             Ready to shorten your URLs? <Link to="/" style={{ color: '#4a90a4' }}>Try U2L now →</Link>
           </p>
+        </footer>
         </article>
       </div>
     </div>

@@ -16,6 +16,13 @@
       }
     },
     {
+      "src": "/ads.txt",
+      "dest": "/ads.txt",
+      "headers": {
+        "Content-Type": "text/plain"
+      }
+    },
+    {
       "src": "/static/(.*)",
       "dest": "/static/$1"
     },

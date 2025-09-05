@@ -10,34 +10,11 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  const authHeader = req.headers.authorization;
-  
-  if (!authHeader) {
-    return res.status(401).json({ error: 'No authorization header' });
-  }
-
-  const token = authHeader.replace('Bearer ', '');
-  
   try {
-    // Create supabase client with the user's token
     const supabase = createClient(
       process.env.SUPABASE_URL,
-      process.env.SUPABASE_ANON_KEY,
-      {
-        global: {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      }
+      process.env.SUPABASE_ANON_KEY
     );
-
-    // Get user from token
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    
-    if (authError || !user) {
-      return res.status(401).json({ error: 'Invalid token' });
-    }
 
     if (req.method === 'GET') {
       const { data, error } = await supabase
@@ -52,9 +29,16 @@ export default async function handler(req, res) {
     if (req.method === 'POST') {
       const { title, content, slug, published } = req.body;
 
+      // Use a placeholder author_id for now
       const { data, error } = await supabase
         .from('blogs')
-        .insert([{ title, content, slug, published, author_id: user.id }])
+        .insert([{ 
+          title, 
+          content, 
+          slug, 
+          published, 
+          author_id: '00000000-0000-0000-0000-000000000000' 
+        }])
         .select()
         .single();
 

@@ -65,7 +65,7 @@ const Blogs: React.FC = () => {
       
       {/* Hero Section */}
       <div style={{ 
-        background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
+        background: 'linear-gradient(135deg, #007bff 0%, #0056b3 100%)',
         color: 'white',
         padding: '60px 20px',
         textAlign: 'center'
@@ -126,7 +126,7 @@ const Blogs: React.FC = () => {
               style={{
                 display: 'inline-block',
                 padding: '12px 24px',
-                background: '#28a745',
+                background: '#007bff',
                 color: 'white',
                 textDecoration: 'none',
                 borderRadius: '8px',
@@ -227,7 +227,7 @@ const Blogs: React.FC = () => {
                     </span>
                     <span style={{
                       fontSize: '12px',
-                      color: '#28a745',
+                      color: '#007bff',
                       fontWeight: '500'
                     }}>
                       Read more →

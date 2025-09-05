@@ -112,7 +112,7 @@ const BlogPost: React.FC = () => {
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
-            color: '#28a745',
+            color: '#007bff',
             textDecoration: 'none',
             fontSize: '14px',
             fontWeight: '500',
@@ -189,7 +189,7 @@ const BlogPost: React.FC = () => {
                 }
               }}
               style={{
-                background: '#28a745',
+                background: '#007bff',
                 color: 'white',
                 border: 'none',
                 borderRadius: '8px',
@@ -224,7 +224,7 @@ const BlogPost: React.FC = () => {
             fontSize: '14px',
             margin: 0
           }}>
-            Ready to shorten your URLs? <Link to="/" style={{ color: '#28a745' }}>Try U2L now →</Link>
+            Ready to shorten your URLs? <Link to="/" style={{ color: '#007bff' }}>Try U2L now →</Link>
           </p>
         </footer>
       </article>

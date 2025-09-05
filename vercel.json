@@ -39,12 +39,8 @@
       "dest": "/api/blogs.js"
     },
     {
-      "src": "/api/blogs-admin",
-      "dest": "/api/blogs-admin.js"
-    },
-    {
-      "src": "/api/blogs",
-      "dest": "/api/blogs.js"
+      "src": "/api/blog/([^/]+)",
+      "dest": "/api/blog/[slug].js?slug=$1"
     },
     {
       "src": "/api/blogs-admin",

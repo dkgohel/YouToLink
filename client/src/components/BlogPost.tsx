@@ -110,14 +110,21 @@ const BlogPost: React.FC = () => {
   }
 
   return (
-    <div>
+    <div style={{ background: '#f8f9fa', minHeight: '100vh' }}>
       <Navbar user={user} onLogout={handleLogout} />
       
-      <article style={{ 
+      <div style={{ 
         maxWidth: '800px', 
         margin: '0 auto', 
         padding: '60px 20px'
       }}>
+        <article style={{ 
+          background: 'white',
+          borderRadius: '12px',
+          padding: '40px',
+          border: '1px solid #e1e5e9',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+        }}>
         {/* Back to Blog Link */}
         <Link 
           to="/blogs"
@@ -239,8 +246,8 @@ const BlogPost: React.FC = () => {
           }}>
             Ready to shorten your URLs? <Link to="/" style={{ color: '#4a90a4' }}>Try U2L now →</Link>
           </p>
-        </footer>
-      </article>
+        </article>
+      </div>
     </div>
   );
 };

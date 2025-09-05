@@ -13,6 +13,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
       
       <div className="nav-menu">
         <div className="nav-links">
+          <Link to="/blogs" className="nav-link">Blog</Link>
           <Link to="/about" className="nav-link">About</Link>
           <Link to="/privacy" className="nav-link">Privacy</Link>
           <Link to="/terms" className="nav-link">Terms</Link>
@@ -23,6 +24,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
         {user ? (
           <>
             <Link to="/dashboard" className="nav-link">My URLs</Link>
+            <Link to="/admin/blogs" className="nav-link">Manage Blogs</Link>
             <div className="user-menu">
               <span className="user-email">{user.email}</span>
               <button onClick={onLogout} className="logout-btn">Logout</button>

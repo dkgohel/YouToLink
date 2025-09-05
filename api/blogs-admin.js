@@ -29,7 +29,7 @@ export default async function handler(req, res) {
     if (req.method === 'POST') {
       const { title, content, slug, published } = req.body;
 
-      // Use a placeholder author_id for now
+      // Use null author_id to avoid foreign key issues
       const { data, error } = await supabase
         .from('blogs')
         .insert([{ 
@@ -37,7 +37,7 @@ export default async function handler(req, res) {
           content, 
           slug, 
           published, 
-          author_id: '00000000-0000-0000-0000-000000000000' 
+          author_id: null 
         }])
         .select()
         .single();

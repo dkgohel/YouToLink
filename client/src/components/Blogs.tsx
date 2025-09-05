@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { supabase } from '../config/supabase';
 import Navbar from './Navbar';
 
 interface Blog {
@@ -13,10 +14,22 @@ interface Blog {
 const Blogs: React.FC = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     fetchBlogs();
+    checkUser();
   }, []);
+
+  const checkUser = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    setUser(session?.user || null);
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+  };
 
   const fetchBlogs = async () => {
     try {
@@ -43,7 +56,7 @@ const Blogs: React.FC = () => {
   if (loading) {
     return (
       <div>
-        <Navbar />
+        <Navbar user={user} onLogout={handleLogout} />
         <div style={{ 
           display: 'flex', 
           justifyContent: 'center', 
@@ -61,7 +74,7 @@ const Blogs: React.FC = () => {
 
   return (
     <div>
-      <Navbar />
+      <Navbar user={user} onLogout={handleLogout} />
       
       {/* Hero Section */}
       <div style={{ 

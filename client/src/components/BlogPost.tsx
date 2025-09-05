@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { supabase } from '../config/supabase';
 import Navbar from './Navbar';
 
 interface Blog {
@@ -15,10 +16,22 @@ const BlogPost: React.FC = () => {
   const [blog, setBlog] = useState<Blog | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     fetchBlog();
+    checkUser();
   }, [slug]);
+
+  const checkUser = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    setUser(session?.user || null);
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+  };
 
   const fetchBlog = async () => {
     try {
@@ -45,7 +58,7 @@ const BlogPost: React.FC = () => {
   if (loading) {
     return (
       <div>
-        <Navbar />
+        <Navbar user={user} onLogout={handleLogout} />
         <div style={{ 
           display: 'flex', 
           justifyContent: 'center', 
@@ -64,7 +77,7 @@ const BlogPost: React.FC = () => {
   if (error || !blog) {
     return (
       <div>
-        <Navbar />
+        <Navbar user={user} onLogout={handleLogout} />
         <div style={{ 
           maxWidth: '800px', 
           margin: '60px auto', 
@@ -98,7 +111,7 @@ const BlogPost: React.FC = () => {
 
   return (
     <div>
-      <Navbar />
+      <Navbar user={user} onLogout={handleLogout} />
       
       <article style={{ 
         maxWidth: '800px', 

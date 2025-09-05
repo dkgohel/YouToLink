@@ -1,10 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../config/supabase';
 import Navbar from './Navbar';
 
 const Terms: React.FC = () => {
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    checkUser();
+  }, []);
+
+  const checkUser = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    setUser(session?.user || null);
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+  };
+
   return (
     <>
-      <Navbar />
+      <Navbar user={user} onLogout={handleLogout} />
       <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', lineHeight: '1.6' }}>
       <h1>Terms of Service</h1>
       <p><strong>Last updated:</strong> September 4, 2025</p>

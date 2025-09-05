@@ -110,7 +110,7 @@ const BlogPost: React.FC = () => {
   }
 
   return (
-    <div style={{ background: '#f8f9fa', minHeight: '100vh' }}>
+    <div>
       <Navbar user={user} onLogout={handleLogout} />
       
       <div style={{ 

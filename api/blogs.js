@@ -5,11 +5,11 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY
 );
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // Set CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -30,34 +30,5 @@ export default async function handler(req, res) {
     }
   }
 
-  if (req.method === 'POST') {
-    try {
-      const { title, content, slug, published } = req.body;
-      const authHeader = req.headers.authorization;
-      
-      if (!authHeader) {
-        return res.status(401).json({ error: 'No authorization header' });
-      }
-
-      const token = authHeader.replace('Bearer ', '');
-      const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-      
-      if (authError || !user) {
-        return res.status(401).json({ error: 'Invalid token' });
-      }
-
-      const { data, error } = await supabase
-        .from('blogs')
-        .insert([{ title, content, slug, published, author_id: user.id }])
-        .select()
-        .single();
-
-      if (error) throw error;
-      return res.json(data);
-    } catch (error) {
-      return res.status(500).json({ error: error.message });
-    }
-  }
-
   return res.status(405).json({ error: 'Method not allowed' });
-}
+};

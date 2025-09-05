@@ -35,6 +35,22 @@
       "dest": "/favicon.ico"
     },
     {
+      "src": "/api/blogs",
+      "dest": "/api/blogs.js"
+    },
+    {
+      "src": "/api/blogs-admin",
+      "dest": "/api/blogs-admin.js"
+    },
+    {
+      "src": "/api/blogs",
+      "dest": "/api/blogs.js"
+    },
+    {
+      "src": "/api/blogs-admin",
+      "dest": "/api/blogs-admin.js"
+    },
+    {
       "src": "/api/shorten",
       "dest": "/api/shorten.js"
     },

@@ -9,6 +9,7 @@ import Privacy from './components/Privacy';
 import About from './components/About';
 import Terms from './components/Terms';
 import Blogs from './components/Blogs';
+import BlogPost from './components/BlogPost';
 import AdminBlogs from './components/AdminBlogs';
 import AdSenseLoader from './components/AdSenseLoader';
 
@@ -53,6 +54,7 @@ function App() {
         <Route path="/dashboard" element={user ? <Dashboard user={user} onLogout={handleLogout} /> : <Navigate to="/auth" />} />
         <Route path="/analytics/:shortCode" element={user ? <Analytics user={user} onLogout={handleLogout} /> : <Navigate to="/auth" />} />
         <Route path="/blogs" element={<Blogs />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
         <Route path="/admin/blogs" element={user ? <AdminBlogs user={user} onLogout={handleLogout} /> : <Navigate to="/auth" />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/about" element={<About />} />

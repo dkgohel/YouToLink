@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import Navbar from './Navbar';
 
 interface Blog {
@@ -27,6 +28,16 @@ const Blogs: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const getExcerpt = (content: string, maxLength: number = 200) => {
+    if (content.length <= maxLength) return content;
+    return content.substring(0, maxLength).trim() + '...';
+  };
+
+  const getReadTime = (content: string) => {
+    const words = content.split(' ').length;
+    return Math.ceil(words / 200);
   };
 
   if (loading) {
@@ -81,7 +92,7 @@ const Blogs: React.FC = () => {
 
       {/* Main Content */}
       <div style={{ 
-        maxWidth: '800px', 
+        maxWidth: '1000px', 
         margin: '0 auto', 
         padding: '60px 20px',
         minHeight: '50vh'
@@ -110,8 +121,8 @@ const Blogs: React.FC = () => {
             }}>
               We're working on some great content. Check back soon!
             </p>
-            <a 
-              href="/"
+            <Link 
+              to="/"
               style={{
                 display: 'inline-block',
                 padding: '12px 24px',
@@ -122,127 +133,108 @@ const Blogs: React.FC = () => {
                 fontWeight: '500',
                 transition: 'background-color 0.2s'
               }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#218838'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#28a745'}
             >
               🔗 Shorten a URL
-            </a>
+            </Link>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
+            gap: '32px'
+          }}>
             {blogs.map((blog) => (
-              <article 
-                key={blog.id} 
-                style={{ 
-                  background: 'white',
-                  borderRadius: '12px',
-                  padding: '32px',
-                  border: '1px solid #e1e5e9',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                  transition: 'transform 0.2s, box-shadow 0.2s'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.1)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)';
-                }}
+              <Link
+                key={blog.id}
+                to={`/blog/${blog.slug}`}
+                style={{ textDecoration: 'none', color: 'inherit' }}
               >
-                <header style={{ marginBottom: '20px' }}>
-                  <h2 style={{ 
-                    fontSize: '28px', 
-                    fontWeight: '700', 
-                    color: '#333',
-                    margin: '0 0 12px 0',
-                    lineHeight: '1.3'
-                  }}>
-                    {blog.title}
-                  </h2>
+                <article 
+                  style={{ 
+                    background: 'white',
+                    borderRadius: '12px',
+                    padding: '24px',
+                    border: '1px solid #e1e5e9',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                    transition: 'transform 0.2s, box-shadow 0.2s',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    cursor: 'pointer'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-4px)';
+                    e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.12)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)';
+                  }}
+                >
+                  <header style={{ marginBottom: '16px' }}>
+                    <h2 style={{ 
+                      fontSize: '20px', 
+                      fontWeight: '600', 
+                      color: '#333',
+                      margin: '0 0 12px 0',
+                      lineHeight: '1.3'
+                    }}>
+                      {blog.title}
+                    </h2>
+                    <div style={{ 
+                      display: 'flex', 
+                      alignItems: 'center',
+                      gap: '16px',
+                      fontSize: '12px',
+                      color: '#666'
+                    }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        📅 {new Date(blog.created_at).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric'
+                        })}
+                      </span>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        ⏱️ {getReadTime(blog.content)} min read
+                      </span>
+                    </div>
+                  </header>
+                  
                   <div style={{ 
-                    display: 'flex', 
-                    alignItems: 'center',
-                    gap: '16px',
+                    color: '#555',
                     fontSize: '14px',
-                    color: '#666'
+                    lineHeight: '1.6',
+                    flex: 1,
+                    marginBottom: '16px'
                   }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      📅 {new Date(blog.created_at).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
-                    </span>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      ⏱️ {Math.ceil(blog.content.split(' ').length / 200)} min read
-                    </span>
+                    {getExcerpt(blog.content)}
                   </div>
-                </header>
-                
-                <div style={{ 
-                  color: '#444',
-                  fontSize: '16px',
-                  lineHeight: '1.7',
-                  whiteSpace: 'pre-wrap'
-                }}>
-                  {blog.content}
-                </div>
-                
-                <footer style={{ 
-                  marginTop: '24px',
-                  paddingTop: '20px',
-                  borderTop: '1px solid #f0f0f0'
-                }}>
-                  <div style={{ 
+                  
+                  <footer style={{ 
                     display: 'flex', 
                     justifyContent: 'space-between',
-                    alignItems: 'center'
+                    alignItems: 'center',
+                    paddingTop: '16px',
+                    borderTop: '1px solid #f0f0f0'
                   }}>
                     <span style={{ 
-                      fontSize: '12px',
+                      fontSize: '11px',
                       color: '#999',
                       fontFamily: 'monospace'
                     }}>
-                      /blogs/{blog.slug}
+                      /{blog.slug}
                     </span>
-                    <div style={{ display: 'flex', gap: '12px' }}>
-                      <button
-                        onClick={() => {
-                          if (navigator.share) {
-                            navigator.share({
-                              title: blog.title,
-                              url: `${window.location.origin}/blogs/${blog.slug}`
-                            });
-                          } else {
-                            navigator.clipboard.writeText(`${window.location.origin}/blogs/${blog.slug}`);
-                          }
-                        }}
-                        style={{
-                          background: 'none',
-                          border: '1px solid #e1e5e9',
-                          borderRadius: '6px',
-                          padding: '6px 12px',
-                          fontSize: '12px',
-                          color: '#666',
-                          cursor: 'pointer',
-                          transition: 'all 0.2s'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.borderColor = '#28a745';
-                          e.currentTarget.style.color = '#28a745';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.borderColor = '#e1e5e9';
-                          e.currentTarget.style.color = '#666';
-                        }}
-                      >
-                        🔗 Share
-                      </button>
-                    </div>
-                  </div>
-                </footer>
-              </article>
+                    <span style={{
+                      fontSize: '12px',
+                      color: '#28a745',
+                      fontWeight: '500'
+                    }}>
+                      Read more →
+                    </span>
+                  </footer>
+                </article>
+              </Link>
             ))}
           </div>
         )}

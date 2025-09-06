@@ -19,12 +19,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-/* Header in dashboard pages */
-.dashboard-container .header {
-  background: white;
-  border-bottom: 1px solid #e1e5e9;
+  background: linear-gradient(135deg, #4a90a4 0%, #2c5f7a 100%);
 }
 
 .logo {
@@ -33,11 +28,6 @@ body {
   color: white;
   text-decoration: none;
   letter-spacing: -1px;
-}
-
-/* Logo color in dashboard pages */
-.dashboard-container .logo {
-  color: #4a90a4;
 }
 
 .nav-menu {

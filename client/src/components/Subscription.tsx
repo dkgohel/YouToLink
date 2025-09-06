@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './Subscription.css';
 
 interface SubscriptionProps {
   user: any;
@@ -68,196 +69,186 @@ const Subscription: React.FC<SubscriptionProps> = ({ user }) => {
 
   return (
     <>
-      {/* Compact Usage Card */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 mb-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-3">
-            <div className={`w-3 h-3 rounded-full ${isPremium ? 'bg-purple-500' : 'bg-blue-500'}`}></div>
-            <h3 className="font-semibold text-gray-900">
-              {isPremium ? 'Premium Plan' : 'Free Plan'}
-            </h3>
+      {/* Subscription Card */}
+      <div className={`subscription-card ${isPremium ? 'premium' : 'free'}`}>
+        <div className="subscription-header">
+          <div className="plan-info">
+            <div className={`plan-badge ${isPremium ? 'premium' : 'free'}`}>
+              {isPremium ? '⭐ Premium' : '🆓 Free Plan'}
+            </div>
+            <p className="plan-description">
+              {isPremium ? 'Unlimited power for your links' : 'Perfect for getting started'}
+            </p>
           </div>
           {!isPremium && (
             <button
               onClick={() => setShowUpgrade(true)}
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+              className="upgrade-btn"
             >
-              Upgrade
+              Upgrade Now
             </button>
           )}
         </div>
 
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-sm text-gray-600">Usage this month</span>
-          <span className="text-sm font-medium text-gray-900">
-            {subscription.current_usage} / {subscription.monthly_limit}
-          </span>
+        <div className="usage-stats">
+          <div className="stat-item">
+            <div className="stat-number">{subscription.current_usage}</div>
+            <div className="stat-label">URLs Used</div>
+          </div>
+          <div className="stat-item">
+            <div className="stat-number">{remaining}</div>
+            <div className="stat-label">Remaining</div>
+          </div>
+          <div className="stat-item">
+            <div className="stat-number">{subscription.monthly_limit}</div>
+            <div className="stat-label">Monthly Limit</div>
+          </div>
         </div>
 
-        <div className="w-full bg-gray-100 rounded-full h-2 mb-3">
-          <div 
-            className={`h-2 rounded-full transition-all duration-300 ${
-              usagePercent > 90 ? 'bg-red-500' : 
-              usagePercent > 70 ? 'bg-yellow-500' : 
-              'bg-blue-500'
-            }`}
-            style={{ width: `${Math.min(usagePercent, 100)}%` }}
-          ></div>
+        <div className="usage-progress">
+          <div className="progress-header">
+            <span>Monthly Usage</span>
+            <span>{subscription.current_usage} / {subscription.monthly_limit}</span>
+          </div>
+          <div className="progress-bar">
+            <div 
+              className={`progress-fill ${
+                usagePercent > 90 ? 'danger' : 
+                usagePercent > 70 ? 'warning' : 'normal'
+              }`}
+              style={{ width: `${Math.min(usagePercent, 100)}%` }}
+            ></div>
+          </div>
+          <p className="progress-text">
+            {remaining > 0 ? `${remaining} URLs remaining this month` : 'Usage limit reached - upgrade to continue'}
+          </p>
         </div>
-
-        <p className="text-xs text-gray-500">
-          {remaining > 0 ? `${remaining} URLs remaining` : 'Limit reached'}
-        </p>
       </div>
 
       {/* Upgrade Modal */}
       {showUpgrade && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            {/* Header */}
-            <div className="p-6 border-b border-gray-100">
-              <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-gray-900">Upgrade to Premium</h2>
+        <div className="modal-overlay" onClick={() => setShowUpgrade(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Choose Your Plan</h2>
+              <button
+                onClick={() => setShowUpgrade(false)}
+                className="modal-close"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="plans-comparison">
+              {/* Free Plan */}
+              <div className="plan-card current">
+                <div className="plan-header">
+                  <h3>Free Plan</h3>
+                  <div className="price">₹0<span>/month</span></div>
+                </div>
+                <ul className="features-list">
+                  <li className="feature included">
+                    <span className="check">✓</span>
+                    25 URLs per month
+                  </li>
+                  <li className="feature included">
+                    <span className="check">✓</span>
+                    Basic analytics
+                  </li>
+                  <li className="feature included">
+                    <span className="check">✓</span>
+                    QR code generation
+                  </li>
+                  <li className="feature excluded">
+                    <span className="cross">✕</span>
+                    Priority support
+                  </li>
+                </ul>
+                <div className="current-plan-badge">Current Plan</div>
+              </div>
+
+              {/* Premium Plan */}
+              <div className="plan-card premium">
+                <div className="popular-badge">Most Popular</div>
+                <div className="plan-header">
+                  <h3>Premium Plan</h3>
+                  <div className="price">₹500<span>/month</span></div>
+                </div>
+                <ul className="features-list">
+                  <li className="feature included">
+                    <span className="check">✓</span>
+                    <strong>1,000 URLs per month</strong>
+                  </li>
+                  <li className="feature included">
+                    <span className="check">✓</span>
+                    Advanced analytics
+                  </li>
+                  <li className="feature included">
+                    <span className="check">✓</span>
+                    Priority support
+                  </li>
+                  <li className="feature included">
+                    <span className="check">✓</span>
+                    Bulk processing
+                  </li>
+                </ul>
                 <button
-                  onClick={() => setShowUpgrade(false)}
-                  className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600"
+                  onClick={upgradeToPremium}
+                  disabled={loading}
+                  className="upgrade-premium-btn"
                 >
-                  ✕
+                  {loading ? (
+                    <span className="loading">
+                      <div className="spinner"></div>
+                      Processing...
+                    </span>
+                  ) : (
+                    'Upgrade to Premium'
+                  )}
                 </button>
               </div>
             </div>
 
-            {/* Content */}
-            <div className="p-6">
-              {/* Current vs Premium */}
-              <div className="grid grid-cols-2 gap-4 mb-8">
-                {/* Current Plan */}
-                <div className="p-4 border border-gray-200 rounded-xl">
-                  <div className="text-center mb-4">
-                    <h3 className="font-semibold text-gray-700 mb-1">Current Plan</h3>
-                    <div className="text-2xl font-bold text-gray-600">Free</div>
+            <div className="benefits-section">
+              <h4>What you get with Premium:</h4>
+              <div className="benefits-grid">
+                <div className="benefit-item">
+                  <div className="benefit-icon">📊</div>
+                  <div>
+                    <h5>Advanced Analytics</h5>
+                    <p>Detailed insights and reports</p>
                   </div>
-                  <ul className="space-y-2 text-sm">
-                    <li className="flex items-center text-gray-600">
-                      <span className="w-4 h-4 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-xs mr-2">✓</span>
-                      25 URLs/month
-                    </li>
-                    <li className="flex items-center text-gray-600">
-                      <span className="w-4 h-4 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-xs mr-2">✓</span>
-                      Basic analytics
-                    </li>
-                    <li className="flex items-center text-gray-400">
-                      <span className="w-4 h-4 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center text-xs mr-2">✕</span>
-                      Priority support
-                    </li>
-                  </ul>
                 </div>
-
-                {/* Premium Plan */}
-                <div className="p-4 border-2 border-blue-500 rounded-xl bg-blue-50/50 relative">
-                  <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-blue-500 text-white text-xs px-3 py-1 rounded-full font-medium">
-                      RECOMMENDED
-                    </span>
+                <div className="benefit-item">
+                  <div className="benefit-icon">⚡</div>
+                  <div>
+                    <h5>40x More URLs</h5>
+                    <p>1,000 vs 25 per month</p>
                   </div>
-                  <div className="text-center mb-4">
-                    <h3 className="font-semibold text-blue-900 mb-1">Premium Plan</h3>
-                    <div className="text-2xl font-bold text-blue-600">₹500<span className="text-sm font-normal text-gray-600">/mo</span></div>
-                  </div>
-                  <ul className="space-y-2 text-sm">
-                    <li className="flex items-center text-gray-700">
-                      <span className="w-4 h-4 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs mr-2">✓</span>
-                      <strong>1,000 URLs/month</strong>
-                    </li>
-                    <li className="flex items-center text-gray-700">
-                      <span className="w-4 h-4 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs mr-2">✓</span>
-                      Advanced analytics
-                    </li>
-                    <li className="flex items-center text-gray-700">
-                      <span className="w-4 h-4 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs mr-2">✓</span>
-                      Priority support
-                    </li>
-                    <li className="flex items-center text-gray-700">
-                      <span className="w-4 h-4 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs mr-2">✓</span>
-                      Bulk processing
-                    </li>
-                  </ul>
                 </div>
-              </div>
-
-              {/* Benefits */}
-              <div className="mb-8">
-                <h4 className="font-semibold text-gray-900 mb-4">What you get with Premium:</h4>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-start space-x-3">
-                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <span className="text-blue-600 text-sm">📊</span>
-                    </div>
-                    <div>
-                      <h5 className="font-medium text-gray-900 text-sm">Advanced Analytics</h5>
-                      <p className="text-xs text-gray-600">Detailed insights and reports</p>
-                    </div>
+                <div className="benefit-item">
+                  <div className="benefit-icon">🎯</div>
+                  <div>
+                    <h5>Priority Support</h5>
+                    <p>Get help when you need it</p>
                   </div>
-                  <div className="flex items-start space-x-3">
-                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <span className="text-blue-600 text-sm">⚡</span>
-                    </div>
-                    <div>
-                      <h5 className="font-medium text-gray-900 text-sm">40x More URLs</h5>
-                      <p className="text-xs text-gray-600">1,000 vs 25 per month</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <span className="text-blue-600 text-sm">🎯</span>
-                    </div>
-                    <div>
-                      <h5 className="font-medium text-gray-900 text-sm">Priority Support</h5>
-                      <p className="text-xs text-gray-600">Get help when you need it</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <span className="text-blue-600 text-sm">🚀</span>
-                    </div>
-                    <div>
-                      <h5 className="font-medium text-gray-900 text-sm">Bulk Processing</h5>
-                      <p className="text-xs text-gray-600">Process multiple URLs at once</p>
-                    </div>
+                </div>
+                <div className="benefit-item">
+                  <div className="benefit-icon">🚀</div>
+                  <div>
+                    <h5>Bulk Processing</h5>
+                    <p>Process multiple URLs at once</p>
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* Payment Info */}
-              <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                <div className="flex items-center space-x-2 mb-2">
-                  <span className="text-sm">💳</span>
-                  <span className="font-medium text-gray-900 text-sm">Secure Payment</span>
-                </div>
-                <p className="text-xs text-gray-600">
-                  Monthly billing • Cancel anytime • Instant activation
-                </p>
+            <div className="payment-info">
+              <div className="payment-header">
+                <span className="payment-icon">💳</span>
+                <span>Secure Payment</span>
               </div>
-
-              {/* Action Button */}
-              <button
-                onClick={upgradeToPremium}
-                disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? (
-                  <span className="flex items-center justify-center space-x-2">
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    <span>Processing...</span>
-                  </span>
-                ) : (
-                  'Upgrade to Premium - ₹500/month'
-                )}
-              </button>
-
-              <p className="text-xs text-gray-500 text-center mt-3">
-                By upgrading, you agree to our terms of service and privacy policy.
-              </p>
+              <p>Monthly billing • Cancel anytime • Instant activation</p>
             </div>
           </div>
         </div>

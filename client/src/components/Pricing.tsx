@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from './Navbar';
+import './Pricing.css';
 
 interface PricingProps {
   user: any;
@@ -9,121 +10,104 @@ interface PricingProps {
 
 const Pricing: React.FC<PricingProps> = ({ user, onLogout }) => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="pricing-page">
       <Navbar user={user} onLogout={onLogout} />
       
-      <div className="max-w-6xl mx-auto px-4 py-16">
+      <div className="pricing-container">
         {/* Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Simple Pricing
-          </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Start free and upgrade when you need more. No hidden fees, cancel anytime.
-          </p>
+        <div className="pricing-header">
+          <h1>Simple, Transparent Pricing</h1>
+          <p>Choose the perfect plan for your URL shortening needs. Start free and upgrade when you're ready for more power.</p>
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16">
+        <div className="pricing-cards">
           {/* Free Plan */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-8 relative">
-            <div className="mb-8">
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Free</h3>
-              <div className="flex items-baseline mb-4">
-                <span className="text-4xl font-bold text-gray-900">₹0</span>
-                <span className="text-gray-500 ml-2">/month</span>
+          <div className="pricing-card free">
+            <div className="card-header">
+              <h3>Free Plan</h3>
+              <div className="price">
+                <span className="currency">₹</span>
+                <span className="amount">0</span>
+                <span className="period">/month</span>
               </div>
-              <p className="text-gray-600">Perfect for personal use</p>
+              <p className="plan-description">Perfect for personal use</p>
             </div>
             
-            <ul className="space-y-4 mb-8">
-              <li className="flex items-center">
-                <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center mr-3">
-                  <span className="text-green-600 text-sm">✓</span>
-                </div>
-                <span className="text-gray-700">25 URLs per month</span>
+            <ul className="features">
+              <li className="feature">
+                <span className="icon check">✓</span>
+                <span>25 URLs per month</span>
               </li>
-              <li className="flex items-center">
-                <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center mr-3">
-                  <span className="text-green-600 text-sm">✓</span>
-                </div>
-                <span className="text-gray-700">Basic analytics</span>
+              <li className="feature">
+                <span className="icon check">✓</span>
+                <span>Basic analytics</span>
               </li>
-              <li className="flex items-center">
-                <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center mr-3">
-                  <span className="text-green-600 text-sm">✓</span>
-                </div>
-                <span className="text-gray-700">QR code generation</span>
+              <li className="feature">
+                <span className="icon check">✓</span>
+                <span>QR code generation</span>
               </li>
-              <li className="flex items-center">
-                <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center mr-3">
-                  <span className="text-green-600 text-sm">✓</span>
-                </div>
-                <span className="text-gray-700">Custom short codes</span>
+              <li className="feature">
+                <span className="icon check">✓</span>
+                <span>Custom short codes</span>
+              </li>
+              <li className="feature">
+                <span className="icon check">✓</span>
+                <span>Mobile dashboard</span>
               </li>
             </ul>
             
             <Link
               to={user ? "/dashboard" : "/auth"}
-              className="w-full bg-gray-900 hover:bg-gray-800 text-white py-3 px-6 rounded-lg font-medium transition-colors text-center block"
+              className="cta-button secondary"
             >
-              {user ? 'Current Plan' : 'Get Started'}
+              {user ? 'Current Plan' : 'Get Started Free'}
             </Link>
           </div>
 
           {/* Premium Plan */}
-          <div className="bg-white rounded-2xl border-2 border-blue-500 p-8 relative shadow-lg">
-            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-              <span className="bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-medium">
-                Most Popular
-              </span>
-            </div>
-            
-            <div className="mb-8">
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Premium</h3>
-              <div className="flex items-baseline mb-4">
-                <span className="text-4xl font-bold text-gray-900">₹500</span>
-                <span className="text-gray-500 ml-2">/month</span>
+          <div className="pricing-card premium">
+            <div className="popular-badge">Most Popular</div>
+            <div className="card-header">
+              <h3>Premium Plan</h3>
+              <div className="price">
+                <span className="currency">₹</span>
+                <span className="amount">500</span>
+                <span className="period">/month</span>
               </div>
-              <p className="text-gray-600">For professionals and businesses</p>
+              <p className="plan-description">For professionals and businesses</p>
             </div>
             
-            <ul className="space-y-4 mb-8">
-              <li className="flex items-center">
-                <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                  <span className="text-blue-600 text-sm">✓</span>
-                </div>
-                <span className="text-gray-700"><strong>1,000 URLs per month</strong></span>
+            <ul className="features">
+              <li className="feature">
+                <span className="icon check premium">✓</span>
+                <span><strong>1,000 URLs per month</strong></span>
               </li>
-              <li className="flex items-center">
-                <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                  <span className="text-blue-600 text-sm">✓</span>
-                </div>
-                <span className="text-gray-700">Advanced analytics</span>
+              <li className="feature">
+                <span className="icon check premium">✓</span>
+                <span>Advanced analytics & insights</span>
               </li>
-              <li className="flex items-center">
-                <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                  <span className="text-blue-600 text-sm">✓</span>
-                </div>
-                <span className="text-gray-700">Priority support</span>
+              <li className="feature">
+                <span className="icon check premium">✓</span>
+                <span>Priority customer support</span>
               </li>
-              <li className="flex items-center">
-                <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                  <span className="text-blue-600 text-sm">✓</span>
-                </div>
-                <span className="text-gray-700">Bulk URL processing</span>
+              <li className="feature">
+                <span className="icon check premium">✓</span>
+                <span>Bulk URL processing</span>
               </li>
-              <li className="flex items-center">
-                <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                  <span className="text-blue-600 text-sm">✓</span>
-                </div>
-                <span className="text-gray-700">API access <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded ml-2">Soon</span></span>
+              <li className="feature">
+                <span className="icon check premium">✓</span>
+                <span>Custom domains <span className="coming-soon">Soon</span></span>
+              </li>
+              <li className="feature">
+                <span className="icon check premium">✓</span>
+                <span>API access <span className="coming-soon">Soon</span></span>
               </li>
             </ul>
             
             <Link
               to={user ? "/dashboard" : "/auth"}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-medium transition-colors text-center block"
+              className="cta-button primary"
             >
               {user ? 'Upgrade Now' : 'Start Premium'}
             </Link>
@@ -131,68 +115,67 @@ const Pricing: React.FC<PricingProps> = ({ user, onLogout }) => {
         </div>
 
         {/* Feature Comparison */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-8 mb-16">
-          <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">Compare Plans</h3>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-4 px-4 font-medium text-gray-900">Feature</th>
-                  <th className="text-center py-4 px-4 font-medium text-gray-900">Free</th>
-                  <th className="text-center py-4 px-4 font-medium text-blue-600">Premium</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                <tr>
-                  <td className="py-4 px-4 text-gray-700">Monthly URLs</td>
-                  <td className="text-center py-4 px-4 text-gray-600">25</td>
-                  <td className="text-center py-4 px-4 font-semibold text-blue-600">1,000</td>
-                </tr>
-                <tr>
-                  <td className="py-4 px-4 text-gray-700">Analytics</td>
-                  <td className="text-center py-4 px-4 text-gray-600">Basic</td>
-                  <td className="text-center py-4 px-4 text-blue-600">Advanced</td>
-                </tr>
-                <tr>
-                  <td className="py-4 px-4 text-gray-700">Support</td>
-                  <td className="text-center py-4 px-4 text-gray-400">Standard</td>
-                  <td className="text-center py-4 px-4 text-blue-600">Priority</td>
-                </tr>
-                <tr>
-                  <td className="py-4 px-4 text-gray-700">Bulk Processing</td>
-                  <td className="text-center py-4 px-4 text-gray-400">Limited</td>
-                  <td className="text-center py-4 px-4 text-blue-600">Unlimited</td>
-                </tr>
-              </tbody>
-            </table>
+        <div className="comparison-section">
+          <h3>Detailed Feature Comparison</h3>
+          <div className="comparison-table">
+            <div className="table-header">
+              <div className="feature-col">Feature</div>
+              <div className="plan-col">Free</div>
+              <div className="plan-col premium">Premium</div>
+            </div>
+            <div className="table-row">
+              <div className="feature-col">Monthly URLs</div>
+              <div className="plan-col">25</div>
+              <div className="plan-col premium"><strong>1,000</strong></div>
+            </div>
+            <div className="table-row">
+              <div className="feature-col">Analytics</div>
+              <div className="plan-col">Basic</div>
+              <div className="plan-col premium">Advanced</div>
+            </div>
+            <div className="table-row">
+              <div className="feature-col">Support</div>
+              <div className="plan-col">Standard</div>
+              <div className="plan-col premium">Priority</div>
+            </div>
+            <div className="table-row">
+              <div className="feature-col">Bulk Processing</div>
+              <div className="plan-col">Limited</div>
+              <div className="plan-col premium">Unlimited</div>
+            </div>
           </div>
         </div>
 
         {/* FAQ */}
-        <div className="max-w-3xl mx-auto">
-          <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">Frequently Asked Questions</h3>
-          <div className="space-y-6">
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h4 className="font-semibold text-gray-900 mb-2">How does billing work?</h4>
-              <p className="text-gray-600">Premium plans are billed monthly. You can cancel anytime and your plan will remain active until the end of your billing period.</p>
+        <div className="faq-section">
+          <h3>Frequently Asked Questions</h3>
+          <div className="faq-grid">
+            <div className="faq-item">
+              <h4>How does billing work?</h4>
+              <p>Premium plans are billed monthly. You can cancel anytime and your plan will remain active until the end of your billing period.</p>
             </div>
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h4 className="font-semibold text-gray-900 mb-2">What happens if I exceed my limit?</h4>
-              <p className="text-gray-600">Free users will be prompted to upgrade. Premium users get 1,000 URLs per month with options to purchase additional URLs if needed.</p>
+            <div className="faq-item">
+              <h4>What happens if I exceed my limit?</h4>
+              <p>Free users will be prompted to upgrade. Premium users get 1,000 URLs per month with options to purchase additional URLs if needed.</p>
             </div>
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h4 className="font-semibold text-gray-900 mb-2">Can I downgrade my plan?</h4>
-              <p className="text-gray-600">Yes, you can downgrade at any time. Your existing URLs will remain active, but new URL creation will be limited to the free plan.</p>
+            <div className="faq-item">
+              <h4>Can I downgrade my plan?</h4>
+              <p>Yes, you can downgrade at any time. Your existing URLs will remain active, but new URL creation will be limited to the free plan.</p>
+            </div>
+            <div className="faq-item">
+              <h4>Is there a free trial?</h4>
+              <p>We offer a generous free plan with 25 URLs per month. You can upgrade to Premium anytime to unlock advanced features.</p>
             </div>
           </div>
         </div>
 
-        {/* CTA */}
-        <div className="text-center mt-16">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">Ready to get started?</h3>
+        {/* CTA Section */}
+        <div className="cta-section">
+          <h3>Ready to get started?</h3>
+          <p>Join thousands of users who trust u2l.in for their URL shortening needs.</p>
           <Link
             to={user ? "/dashboard" : "/auth"}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors inline-block"
+            className="cta-button primary large"
           >
             {user ? 'Go to Dashboard' : 'Start Free Today'}
           </Link>

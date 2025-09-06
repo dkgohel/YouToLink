@@ -32,10 +32,13 @@ const Subscription: React.FC<SubscriptionProps> = ({ user }) => {
 
   const fetchSubscription = async () => {
     try {
-      const response = await fetch('/api/subscription', {
+      // Add timestamp to prevent caching
+      const timestamp = new Date().getTime();
+      const response = await fetch(`/api/subscription?t=${timestamp}`, {
         headers: {
           'x-user-id': user.id,
-          'Authorization': `Bearer ${user.access_token || ''}`
+          'Authorization': `Bearer ${user.access_token || ''}`,
+          'Cache-Control': 'no-cache'
         }
       });
       

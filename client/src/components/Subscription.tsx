@@ -31,10 +31,35 @@ const Subscription: React.FC<SubscriptionProps> = ({ user }) => {
           'Authorization': `Bearer ${user.access_token || ''}`
         }
       });
-      const data = await response.json();
-      setSubscription(data);
+      
+      if (response.ok) {
+        const data = await response.json();
+        // Ensure we have valid numbers with defaults
+        const subscriptionData = {
+          plan_type: data.plan_type || 'free',
+          monthly_limit: data.monthly_limit || 25,
+          current_usage: data.current_usage || 0,
+          billing_cycle_start: data.billing_cycle_start || new Date().toISOString()
+        };
+        setSubscription(subscriptionData);
+      } else {
+        // Set default subscription if API fails
+        setSubscription({
+          plan_type: 'free',
+          monthly_limit: 25,
+          current_usage: 0,
+          billing_cycle_start: new Date().toISOString()
+        });
+      }
     } catch (error) {
       console.error('Failed to fetch subscription:', error);
+      // Set default subscription on error
+      setSubscription({
+        plan_type: 'free',
+        monthly_limit: 25,
+        current_usage: 0,
+        billing_cycle_start: new Date().toISOString()
+      });
     }
   };
 
@@ -63,8 +88,11 @@ const Subscription: React.FC<SubscriptionProps> = ({ user }) => {
 
   if (!subscription) return null;
 
-  const remaining = subscription.monthly_limit - subscription.current_usage;
-  const usagePercent = (subscription.current_usage / subscription.monthly_limit) * 100;
+  // Ensure we have valid numbers
+  const currentUsage = Number(subscription.current_usage) || 0;
+  const monthlyLimit = Number(subscription.monthly_limit) || 25;
+  const remaining = Math.max(0, monthlyLimit - currentUsage);
+  const usagePercent = monthlyLimit > 0 ? (currentUsage / monthlyLimit) * 100 : 0;
   const isPremium = subscription.plan_type === 'premium';
 
   return (
@@ -92,7 +120,7 @@ const Subscription: React.FC<SubscriptionProps> = ({ user }) => {
 
         <div className="usage-stats">
           <div className="stat-item">
-            <div className="stat-number">{subscription.current_usage}</div>
+            <div className="stat-number">{currentUsage}</div>
             <div className="stat-label">URLs Used</div>
           </div>
           <div className="stat-item">
@@ -100,7 +128,7 @@ const Subscription: React.FC<SubscriptionProps> = ({ user }) => {
             <div className="stat-label">Remaining</div>
           </div>
           <div className="stat-item">
-            <div className="stat-number">{subscription.monthly_limit}</div>
+            <div className="stat-number">{monthlyLimit}</div>
             <div className="stat-label">Monthly Limit</div>
           </div>
         </div>
@@ -108,7 +136,7 @@ const Subscription: React.FC<SubscriptionProps> = ({ user }) => {
         <div className="usage-progress">
           <div className="progress-header">
             <span>Monthly Usage</span>
-            <span>{subscription.current_usage} / {subscription.monthly_limit}</span>
+            <span>{currentUsage} / {monthlyLimit}</span>
           </div>
           <div className="progress-bar">
             <div 

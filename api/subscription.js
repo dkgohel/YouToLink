@@ -39,18 +39,38 @@ module.exports = async (req, res) => {
         // Create default subscription
         const { data: newSub, error: insertError } = await supabase
           .from('user_subscriptions')
-          .insert([{ user_id: userId }])
+          .insert([{ 
+            user_id: userId,
+            plan_type: 'free',
+            monthly_limit: 25,
+            current_usage: 0,
+            billing_cycle_start: new Date().toISOString().split('T')[0]
+          }])
           .select()
           .single();
         
         if (insertError) {
           console.error('Subscription creation error:', insertError);
-          return res.status(500).json({ error: 'Failed to create subscription' });
+          // Return default values even if insert fails
+          return res.json({
+            plan_type: 'free',
+            monthly_limit: 25,
+            current_usage: 0,
+            billing_cycle_start: new Date().toISOString().split('T')[0]
+          });
         }
         subscription = newSub;
       }
 
-      res.json(subscription);
+      // Ensure we return valid numbers
+      const responseData = {
+        plan_type: subscription.plan_type || 'free',
+        monthly_limit: Number(subscription.monthly_limit) || 25,
+        current_usage: Number(subscription.current_usage) || 0,
+        billing_cycle_start: subscription.billing_cycle_start || new Date().toISOString().split('T')[0]
+      };
+
+      res.json(responseData);
     } 
     else if (req.method === 'POST') {
       // Upgrade to premium

@@ -107,10 +107,19 @@ module.exports = async (req, res) => {
       
       // Update usage count for authenticated users
       if (userId && results.length > 0) {
-        await supabase
+        // Get current usage first
+        const { data: currentSub } = await supabase
           .from('user_subscriptions')
-          .update({ current_usage: supabase.raw('current_usage + ?', [results.length]) })
-          .eq('user_id', userId);
+          .select('current_usage')
+          .eq('user_id', userId)
+          .single();
+        
+        if (currentSub) {
+          await supabase
+            .from('user_subscriptions')
+            .update({ current_usage: currentSub.current_usage + results.length })
+            .eq('user_id', userId);
+        }
       }
       
       return res.json({ results });
@@ -159,10 +168,19 @@ module.exports = async (req, res) => {
 
     // Update usage count for authenticated users
     if (userId) {
-      await supabase
+      // Get current usage first
+      const { data: currentSub } = await supabase
         .from('user_subscriptions')
-        .update({ current_usage: supabase.raw('current_usage + 1') })
-        .eq('user_id', userId);
+        .select('current_usage')
+        .eq('user_id', userId)
+        .single();
+      
+      if (currentSub) {
+        await supabase
+          .from('user_subscriptions')
+          .update({ current_usage: currentSub.current_usage + 1 })
+          .eq('user_id', userId);
+      }
     }
 
     res.json({ shortUrl: `https://u2l.in/${shortCode}` });

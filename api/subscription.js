@@ -24,19 +24,29 @@ module.exports = async (req, res) => {
   try {
     if (req.method === 'GET') {
       // Get current subscription
-      let { data: subscription } = await supabase
+      let { data: subscription, error } = await supabase
         .from('user_subscriptions')
         .select('*')
         .eq('user_id', userId)
         .single();
 
+      if (error && error.code !== 'PGRST116') {
+        console.error('Subscription fetch error:', error);
+        return res.status(500).json({ error: 'Database error' });
+      }
+
       if (!subscription) {
         // Create default subscription
-        const { data: newSub } = await supabase
+        const { data: newSub, error: insertError } = await supabase
           .from('user_subscriptions')
           .insert([{ user_id: userId }])
           .select()
           .single();
+        
+        if (insertError) {
+          console.error('Subscription creation error:', insertError);
+          return res.status(500).json({ error: 'Failed to create subscription' });
+        }
         subscription = newSub;
       }
 

@@ -59,6 +59,13 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
       
       setShortUrl(data.shortUrl);
       
+      // Refresh subscription data after URL creation
+      if (user && (window as any).refreshSubscription) {
+        setTimeout(() => {
+          (window as any).refreshSubscription();
+        }, 1000); // Small delay to ensure backend has updated
+      }
+      
       // Generate QR code
       const shortCode = data.shortUrl.split('/').pop();
       if (shortCode) {

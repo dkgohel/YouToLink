@@ -21,13 +21,14 @@ const Subscription: React.FC<SubscriptionProps> = ({ user }) => {
     if (user) {
       fetchSubscription();
       
-      // Refresh subscription data every 3 seconds to keep usage updated
-      const interval = setInterval(() => {
-        fetchSubscription();
-      }, 3000);
-      
-      return () => clearInterval(interval);
+      // Expose refresh function globally for manual refresh
+      (window as any).refreshSubscription = fetchSubscription;
     }
+    
+    return () => {
+      // Clean up global function
+      delete (window as any).refreshSubscription;
+    };
   }, [user]);
 
   const fetchSubscription = async () => {

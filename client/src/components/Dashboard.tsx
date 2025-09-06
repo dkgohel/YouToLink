@@ -86,7 +86,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
         />
 
         {/* Subscription Info */}
-        <Subscription user={user} onRefresh={() => {}} />
+        <Subscription user={user} />
 
         <div className="stats-grid">
           <div className="stat-card">

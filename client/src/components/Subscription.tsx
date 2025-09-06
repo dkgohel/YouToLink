@@ -3,7 +3,6 @@ import './Subscription.css';
 
 interface SubscriptionProps {
   user: any;
-  onRefresh?: () => void;
 }
 
 interface SubscriptionData {
@@ -13,7 +12,7 @@ interface SubscriptionData {
   billing_cycle_start: string;
 }
 
-const Subscription: React.FC<SubscriptionProps> = ({ user, onRefresh }) => {
+const Subscription: React.FC<SubscriptionProps> = ({ user }) => {
   const [subscription, setSubscription] = useState<SubscriptionData | null>(null);
   const [loading, setLoading] = useState(false);
   const [showUpgrade, setShowUpgrade] = useState(false);
@@ -22,21 +21,14 @@ const Subscription: React.FC<SubscriptionProps> = ({ user, onRefresh }) => {
     if (user) {
       fetchSubscription();
       
-      // Refresh subscription data every 5 seconds to keep usage updated
+      // Refresh subscription data every 3 seconds to keep usage updated
       const interval = setInterval(() => {
         fetchSubscription();
-      }, 5000);
+      }, 3000);
       
       return () => clearInterval(interval);
     }
   }, [user]);
-
-  // Expose refresh function to parent
-  useEffect(() => {
-    if (onRefresh) {
-      window.refreshSubscription = fetchSubscription;
-    }
-  }, [onRefresh]);
 
   const fetchSubscription = async () => {
     try {

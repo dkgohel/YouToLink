@@ -8,6 +8,7 @@ import Analytics from './components/Analytics';
 import Privacy from './components/Privacy';
 import About from './components/About';
 import Terms from './components/Terms';
+import Pricing from './components/Pricing';
 import Blogs from './components/Blogs';
 import BlogPost from './components/BlogPost';
 import AdminBlogs from './components/AdminBlogs';
@@ -59,6 +60,7 @@ function App() {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/about" element={<About />} />
         <Route path="/terms" element={<Terms />} />
+        <Route path="/pricing" element={<Pricing user={user} onLogout={handleLogout} />} />
       </Routes>
     </Router>
   );

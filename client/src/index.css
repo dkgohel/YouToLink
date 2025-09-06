@@ -21,12 +21,23 @@ body {
   align-items: center;
 }
 
+/* Header in dashboard pages */
+.dashboard-container .header {
+  background: white;
+  border-bottom: 1px solid #e1e5e9;
+}
+
 .logo {
   font-size: 32px;
   font-weight: 900;
   color: white;
   text-decoration: none;
   letter-spacing: -1px;
+}
+
+/* Logo color in dashboard pages */
+.dashboard-container .logo {
+  color: #4a90a4;
 }
 
 .nav-menu {

@@ -59,6 +59,11 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
       
       setShortUrl(data.shortUrl);
       
+      // Refresh subscription data if user is logged in
+      if (user && (window as any).refreshSubscription) {
+        (window as any).refreshSubscription();
+      }
+      
       // Generate QR code
       const shortCode = data.shortUrl.split('/').pop();
       if (shortCode) {
@@ -106,7 +111,7 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
         />
         
         {/* Subscription Info for authenticated users */}
-        {user && <Subscription user={user} />}
+        {user && <Subscription user={user} onRefresh={() => {}} />}
       </div>
 
       {/* Main Content */}

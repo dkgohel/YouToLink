@@ -107,18 +107,35 @@ module.exports = async (req, res) => {
       
       // Update usage count for authenticated users
       if (userId && results.length > 0) {
-        // Get current usage first
-        const { data: currentSub } = await supabase
-          .from('user_subscriptions')
-          .select('current_usage')
-          .eq('user_id', userId)
-          .single();
-        
-        if (currentSub) {
-          await supabase
+        try {
+          // First, ensure subscription exists
+          const { data: existingSub, error: selectError } = await supabase
             .from('user_subscriptions')
-            .update({ current_usage: currentSub.current_usage + results.length })
-            .eq('user_id', userId);
+            .select('current_usage, monthly_limit')
+            .eq('user_id', userId)
+            .single();
+          
+          if (selectError && selectError.code === 'PGRST116') {
+            // Subscription doesn't exist, create it
+            await supabase
+              .from('user_subscriptions')
+              .insert([{ 
+                user_id: userId,
+                plan_type: 'free',
+                monthly_limit: 25,
+                current_usage: results.length,
+                billing_cycle_start: new Date().toISOString().split('T')[0]
+              }]);
+          } else if (existingSub) {
+            // Update existing subscription
+            await supabase
+              .from('user_subscriptions')
+              .update({ current_usage: existingSub.current_usage + results.length })
+              .eq('user_id', userId);
+          }
+        } catch (usageError) {
+          console.error('Bulk usage tracking error:', usageError);
+          // Don't fail the URL creation if usage tracking fails
         }
       }
       
@@ -168,18 +185,35 @@ module.exports = async (req, res) => {
 
     // Update usage count for authenticated users
     if (userId) {
-      // Get current usage first
-      const { data: currentSub } = await supabase
-        .from('user_subscriptions')
-        .select('current_usage')
-        .eq('user_id', userId)
-        .single();
-      
-      if (currentSub) {
-        await supabase
+      try {
+        // First, ensure subscription exists
+        const { data: existingSub, error: selectError } = await supabase
           .from('user_subscriptions')
-          .update({ current_usage: currentSub.current_usage + 1 })
-          .eq('user_id', userId);
+          .select('current_usage, monthly_limit')
+          .eq('user_id', userId)
+          .single();
+        
+        if (selectError && selectError.code === 'PGRST116') {
+          // Subscription doesn't exist, create it
+          await supabase
+            .from('user_subscriptions')
+            .insert([{ 
+              user_id: userId,
+              plan_type: 'free',
+              monthly_limit: 25,
+              current_usage: 1,
+              billing_cycle_start: new Date().toISOString().split('T')[0]
+            }]);
+        } else if (existingSub) {
+          // Update existing subscription
+          await supabase
+            .from('user_subscriptions')
+            .update({ current_usage: existingSub.current_usage + 1 })
+            .eq('user_id', userId);
+        }
+      } catch (usageError) {
+        console.error('Usage tracking error:', usageError);
+        // Don't fail the URL creation if usage tracking fails
       }
     }
 

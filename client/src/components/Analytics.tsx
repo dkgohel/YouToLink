@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import AdBanner from './AdBanner';
+import Navbar from './Navbar';
 
 interface AnalyticsProps {
   user: any;
@@ -57,16 +58,7 @@ const Analytics: React.FC<AnalyticsProps> = ({ user, onLogout }) => {
   if (loading) {
     return (
       <div className="dashboard-container">
-        <div className="dashboard-header">
-          <Link to="/" className="dashboard-logo">U2L</Link>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-            <div className="user-menu">
-              <span className="user-email">{user.email}</span>
-              <button onClick={onLogout} className="logout-btn">Logout</button>
-            </div>
-            <Link to="/dashboard" className="btn-account">← Back to Dashboard</Link>
-          </div>
-        </div>
+        <Navbar user={user} onLogout={onLogout} />
         <div className="dashboard-content">
           <div style={{ textAlign: 'center', padding: '60px' }}>
             <span className="spinner"></span>
@@ -80,11 +72,12 @@ const Analytics: React.FC<AnalyticsProps> = ({ user, onLogout }) => {
   if (error || !data) {
     return (
       <div className="dashboard-container">
-        <div className="dashboard-header">
-          <Link to="/" className="dashboard-logo">U2L</Link>
-          <Link to="/dashboard" className="btn-account">← Back to Dashboard</Link>
-        </div>
+        <Navbar user={user} onLogout={onLogout} />
         <div className="dashboard-content">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+            <h1 className="dashboard-title">Analytics</h1>
+            <Link to="/dashboard" className="btn-account">← Back to Dashboard</Link>
+          </div>
           <div style={{ 
             background: 'white', 
             borderRadius: '12px', 
@@ -104,25 +97,19 @@ const Analytics: React.FC<AnalyticsProps> = ({ user, onLogout }) => {
 
   return (
     <div className={`dashboard-container ${user?.subscription === 'premium' ? 'premium-user' : ''}`}>
-      <div className="dashboard-header">
-        <Link to="/" className="dashboard-logo">U2L</Link>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <div className="user-menu">
-            <span className="user-email">{user.email}</span>
-            <button onClick={onLogout} className="logout-btn">Logout</button>
-          </div>
-          <Link to="/dashboard" className="btn-account">← Back to Dashboard</Link>
-        </div>
-      </div>
+      <Navbar user={user} onLogout={onLogout} />
 
       <div className="dashboard-content">
-        <div style={{ marginBottom: '32px' }}>
-          <h1 className="dashboard-title">Analytics for u2l.in/{shortCode}</h1>
-          <p style={{ color: '#666', fontSize: '16px' }}>
-            Original URL: <a href={url.long_url} target="_blank" rel="noopener noreferrer" style={{ color: '#4a90a4' }}>
-              {url.long_url}
-            </a>
-          </p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+          <div>
+            <h1 className="dashboard-title">Analytics for u2l.in/{shortCode}</h1>
+            <p style={{ color: '#666', fontSize: '16px' }}>
+              Original URL: <a href={url.long_url} target="_blank" rel="noopener noreferrer" style={{ color: '#4a90a4' }}>
+                {url.long_url}
+              </a>
+            </p>
+          </div>
+          <Link to="/dashboard" className="btn-account">← Back to Dashboard</Link>
         </div>
 
         {/* Stats Overview */}

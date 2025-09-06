@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { supabase } from '../config/supabase';
+import { supabase } from '../supabase';
+import Navbar from './Navbar';
 
 interface Blog {
   id: number;
@@ -87,13 +88,7 @@ const AdminBlogs: React.FC<AdminBlogsProps> = ({ user, onLogout }) => {
   if (loading) {
     return (
       <div className="dashboard-container">
-        <div className="dashboard-header">
-          <Link to="/" className="dashboard-logo">U2L</Link>
-          <div className="user-menu">
-            <span className="user-email">{user?.email}</span>
-            <button onClick={onLogout} className="logout-btn">Logout</button>
-          </div>
-        </div>
+        <Navbar user={user} onLogout={onLogout} />
         <div className="dashboard-content">
           <div style={{ textAlign: 'center', padding: '60px' }}>
             <span className="spinner"></span>
@@ -106,18 +101,7 @@ const AdminBlogs: React.FC<AdminBlogsProps> = ({ user, onLogout }) => {
 
   return (
     <div className="dashboard-container">
-      {/* Header with Navigation */}
-      <div className="dashboard-header">
-        <Link to="/" className="dashboard-logo">U2L</Link>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <Link to="/blogs" className="nav-link">View Blogs</Link>
-          <Link to="/dashboard" className="nav-link">My URLs</Link>
-          <div className="user-menu">
-            <span className="user-email">{user?.email}</span>
-            <button onClick={onLogout} className="logout-btn">Logout</button>
-          </div>
-        </div>
-      </div>
+      <Navbar user={user} onLogout={onLogout} />
 
       <div className="dashboard-content">
         {/* Page Header */}

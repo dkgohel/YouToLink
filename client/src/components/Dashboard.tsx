@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import AdBanner from './AdBanner';
+import Navbar from './Navbar';
 
 interface DashboardProps {
   user: any;
@@ -55,13 +56,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
   if (loading) {
     return (
       <div className="dashboard-container">
-        <div className="dashboard-header">
-          <Link to="/" className="dashboard-logo">U2L</Link>
-          <div className="user-menu">
-            <span className="user-email">{user.email}</span>
-            <button onClick={onLogout} className="logout-btn">Logout</button>
-          </div>
-        </div>
+        <Navbar user={user} onLogout={onLogout} />
         <div className="dashboard-content">
           <div style={{ textAlign: 'center', padding: '60px' }}>
             <span className="spinner"></span>
@@ -74,19 +69,13 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
 
   return (
     <div className={`dashboard-container ${user?.subscription === 'premium' ? 'premium-user' : ''}`}>
-      <div className="dashboard-header">
-        <Link to="/" className="dashboard-logo">U2L</Link>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <div className="user-menu">
-            <span className="user-email">{user.email}</span>
-            <button onClick={onLogout} className="logout-btn">Logout</button>
-          </div>
-          <Link to="/" className="btn-account">+ Create New</Link>
-        </div>
-      </div>
+      <Navbar user={user} onLogout={onLogout} />
 
       <div className="dashboard-content">
-        <h1 className="dashboard-title">My URLs</h1>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+          <h1 className="dashboard-title">My URLs</h1>
+          <Link to="/" className="btn-account">+ Create New</Link>
+        </div>
 
         {/* Dashboard Banner Ad */}
         <AdBanner 

@@ -83,6 +83,19 @@ CREATE TABLE IF NOT EXISTS url_analytics (
   os VARCHAR(50)
 );
 
+-- Create user subscriptions table for premium features
+CREATE TABLE IF NOT EXISTS user_subscriptions (
+  id BIGSERIAL PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  plan_type VARCHAR(20) DEFAULT 'free' CHECK (plan_type IN ('free', 'premium')),
+  monthly_limit INTEGER DEFAULT 25,
+  current_usage INTEGER DEFAULT 0,
+  billing_cycle_start DATE DEFAULT CURRENT_DATE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(user_id)
+);
+
 -- Create indexes
 CREATE INDEX IF NOT EXISTS idx_urls_short_code ON urls(short_code);
 CREATE INDEX IF NOT EXISTS idx_urls_user_id ON urls(user_id);
@@ -112,13 +125,15 @@ This will start:
 
 ## API Endpoints
 
-- `POST /api/shorten` - Create a short URL
+- `POST /api/shorten` - Create a short URL (with usage limits)
 - `GET /:shortCode` - Redirect to original URL
 - `GET /api/stats/:shortCode` - Get click statistics
 - `GET /api/analytics/:shortCode` - Get detailed analytics
 - `GET /api/my-urls` - Get user's URLs (authenticated)
 - `PUT /api/urls/:id` - Update URL alias (authenticated)
 - `DELETE /api/urls/:id` - Delete URL (authenticated)
+- `GET /api/subscription` - Get user subscription details (authenticated)
+- `POST /api/subscription` - Upgrade to premium plan (authenticated)
 
 ## Project Structure
 
@@ -166,3 +181,5 @@ Set these in your deployment platform:
 - ✅ Real-time click tracking
 - ✅ Mobile-responsive design
 - ✅ Secure environment variable handling
+- ✅ Premium subscription with usage limits (25 free, 1000 premium at ₹500/month)
+- ✅ Usage tracking and billing cycle management

@@ -12,6 +12,29 @@ function generateShortCode() {
   return result;
 }
 
+async function checkUsageLimit(supabase, userId, urlCount = 1) {
+  if (!userId) return { allowed: true }; // Anonymous users allowed
+  
+  const { data: subscription } = await supabase
+    .from('user_subscriptions')
+    .select('*')
+    .eq('user_id', userId)
+    .single();
+  
+  if (!subscription) {
+    // Create default subscription
+    await supabase.from('user_subscriptions').insert([{ user_id: userId }]);
+    return { allowed: urlCount <= 25, remaining: 25 - urlCount };
+  }
+  
+  const remaining = subscription.monthly_limit - subscription.current_usage;
+  return { 
+    allowed: remaining >= urlCount, 
+    remaining: remaining - urlCount,
+    plan: subscription.plan_type 
+  };
+}
+
 module.exports = async (req, res) => {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -40,11 +63,24 @@ module.exports = async (req, res) => {
     
     // Handle bulk URLs
     if (urls && Array.isArray(urls)) {
+      const validUrls = urls.filter(url => url.trim());
+      
+      // Check usage limit for authenticated users
+      if (userId) {
+        const { allowed, remaining, plan } = await checkUsageLimit(supabase, userId, validUrls.length);
+        if (!allowed) {
+          return res.status(429).json({ 
+            error: 'Usage limit exceeded', 
+            remaining: Math.max(0, remaining + validUrls.length),
+            plan,
+            upgradeRequired: plan === 'free'
+          });
+        }
+      }
+      
       const results = [];
       
-      for (const url of urls) {
-        if (!url.trim()) continue;
-        
+      for (const url of validUrls) {
         let processedUrl = url.trim();
         if (!processedUrl.startsWith('http://') && !processedUrl.startsWith('https://')) {
           processedUrl = 'https://' + processedUrl;
@@ -69,12 +105,33 @@ module.exports = async (req, res) => {
         }
       }
       
+      // Update usage count for authenticated users
+      if (userId && results.length > 0) {
+        await supabase
+          .from('user_subscriptions')
+          .update({ current_usage: supabase.raw('current_usage + ?', [results.length]) })
+          .eq('user_id', userId);
+      }
+      
       return res.json({ results });
     }
     
     // Handle single URL
     if (!longUrl) {
       return res.status(400).json({ error: 'Long URL is required' });
+    }
+
+    // Check usage limit for authenticated users
+    if (userId) {
+      const { allowed, remaining, plan } = await checkUsageLimit(supabase, userId, 1);
+      if (!allowed) {
+        return res.status(429).json({ 
+          error: 'Usage limit exceeded', 
+          remaining: Math.max(0, remaining + 1),
+          plan,
+          upgradeRequired: plan === 'free'
+        });
+      }
     }
 
     let processedUrl = longUrl.trim();
@@ -98,6 +155,14 @@ module.exports = async (req, res) => {
         return res.status(409).json({ error: 'Custom URL already exists' });
       }
       return res.status(500).json({ error: 'Database error: ' + error.message });
+    }
+
+    // Update usage count for authenticated users
+    if (userId) {
+      await supabase
+        .from('user_subscriptions')
+        .update({ current_usage: supabase.raw('current_usage + 1') })
+        .eq('user_id', userId);
     }
 
     res.json({ shortUrl: `https://u2l.in/${shortCode}` });

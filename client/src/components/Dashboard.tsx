@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import AdBanner from './AdBanner';
 import Navbar from './Navbar';
+import Subscription from './Subscription';
 
 interface DashboardProps {
   user: any;
@@ -83,6 +84,9 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
           className="ad-container-dashboard"
           style={{ minHeight: '90px' }}
         />
+
+        {/* Subscription Info */}
+        <Subscription user={user} />
 
         <div className="stats-grid">
           <div className="stat-card">

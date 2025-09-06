@@ -1,0 +1,64 @@
+const { createClient } = require('@supabase/supabase-js');
+
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_ANON_KEY;
+
+module.exports = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,POST,PUT');
+  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization, x-user-id');
+
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
+  const userId = req.headers['x-user-id'];
+  if (!userId) {
+    return res.status(401).json({ error: 'Authentication required' });
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  try {
+    if (req.method === 'GET') {
+      // Get current subscription
+      let { data: subscription } = await supabase
+        .from('user_subscriptions')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+
+      if (!subscription) {
+        // Create default subscription
+        const { data: newSub } = await supabase
+          .from('user_subscriptions')
+          .insert([{ user_id: userId }])
+          .select()
+          .single();
+        subscription = newSub;
+      }
+
+      res.json(subscription);
+    } 
+    else if (req.method === 'POST') {
+      // Upgrade to premium
+      const { data } = await supabase
+        .from('user_subscriptions')
+        .update({
+          plan_type: 'premium',
+          monthly_limit: 1000,
+          billing_cycle_start: new Date().toISOString().split('T')[0]
+        })
+        .eq('user_id', userId)
+        .select()
+        .single();
+
+      res.json({ success: true, subscription: data });
+    }
+  } catch (error) {
+    console.error('Subscription API Error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};

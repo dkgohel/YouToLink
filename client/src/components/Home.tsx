@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import AdBanner from './AdBanner';
 import Navbar from './Navbar';
+import Subscription from './Subscription';
 
 interface HomeProps {
   user: any;
@@ -48,7 +49,11 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
       const data = await response.json();
       
       if (!response.ok) {
-        setError(data.error);
+        if (response.status === 429 && data.upgradeRequired) {
+          setError(`${data.error}. Upgrade to Premium for 1,000 URLs/month at ₹500/month.`);
+        } else {
+          setError(data.error);
+        }
         return;
       }
       
@@ -99,6 +104,9 @@ const Home: React.FC<HomeProps> = ({ user, onLogout }) => {
             marginBottom: '20px'
           }}
         />
+        
+        {/* Subscription Info for authenticated users */}
+        {user && <Subscription user={user} />}
       </div>
 
       {/* Main Content */}

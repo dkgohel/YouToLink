@@ -59,10 +59,6 @@
       "dest": "/api/subscription.js"
     },
     {
-      "src": "/api/debug-usage",
-      "dest": "/api/debug-usage.js"
-    },
-    {
       "src": "/api/analytics/([a-zA-Z0-9]{6})",
       "dest": "/api/analytics/[shortCode].js?shortCode=$1"
     },

@@ -80,19 +80,24 @@ const Subscription: React.FC<SubscriptionProps> = ({ user }) => {
       const response = await fetch('/api/subscription', {
         method: 'POST',
         headers: {
+          'Content-Type': 'application/json',
           'x-user-id': user.id,
           'Authorization': `Bearer ${user.access_token || ''}`
-        }
+        },
+        body: JSON.stringify({})
       });
       const data = await response.json();
-      if (data.success) {
+      
+      if (response.ok && data.success) {
         setSubscription(data.subscription);
         setShowUpgrade(false);
         alert('🎉 Successfully upgraded to Premium!');
+      } else {
+        alert(data.error || 'Payment integration required. Please contact support for manual upgrade.');
       }
     } catch (error) {
       console.error('Upgrade failed:', error);
-      alert('Upgrade failed. Please try again.');
+      alert('Payment system not yet integrated. Please contact support for manual upgrade.');
     }
     setLoading(false);
   };

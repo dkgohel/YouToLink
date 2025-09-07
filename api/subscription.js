@@ -78,19 +78,20 @@ module.exports = async (req, res) => {
       res.json(responseData);
     } 
     else if (req.method === 'POST') {
-      // Upgrade to premium
-      const { data } = await supabase
-        .from('user_subscriptions')
-        .update({
-          plan_type: 'premium',
-          monthly_limit: 1000,
-          billing_cycle_start: new Date().toISOString().split('T')[0]
-        })
-        .eq('user_id', userId)
-        .select()
-        .single();
-
-      res.json({ success: true, subscription: data });
+      // Premium upgrade - require payment validation
+      const { paymentId, orderId } = req.body;
+      
+      if (!paymentId || !orderId) {
+        return res.status(400).json({ 
+          error: 'Payment validation required. Please complete payment first.' 
+        });
+      }
+      
+      // TODO: Validate payment with Razorpay/Stripe
+      // For now, return error to prevent free upgrades
+      return res.status(400).json({ 
+        error: 'Payment integration required. Contact support for manual upgrade.' 
+      });
     }
   } catch (error) {
     console.error('Subscription API Error:', error);

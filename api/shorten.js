@@ -108,15 +108,20 @@ module.exports = async (req, res) => {
       // Update usage count for authenticated users
       if (userId && results.length > 0) {
         try {
-          // First, ensure subscription exists
-          const { data: existingSub, error: selectError } = await supabase
+          // Get current usage and update
+          const { data: existing } = await supabase
             .from('user_subscriptions')
-            .select('current_usage, monthly_limit')
+            .select('current_usage')
             .eq('user_id', userId)
             .single();
-          
-          if (selectError && selectError.code === 'PGRST116') {
-            // Subscription doesn't exist, create it
+
+          if (existing) {
+            await supabase
+              .from('user_subscriptions')
+              .update({ current_usage: existing.current_usage + results.length })
+              .eq('user_id', userId);
+          } else {
+            // Create new subscription with usage
             await supabase
               .from('user_subscriptions')
               .insert([{ 
@@ -126,16 +131,9 @@ module.exports = async (req, res) => {
                 current_usage: results.length,
                 billing_cycle_start: new Date().toISOString().split('T')[0]
               }]);
-          } else if (existingSub) {
-            // Update existing subscription
-            await supabase
-              .from('user_subscriptions')
-              .update({ current_usage: existingSub.current_usage + results.length })
-              .eq('user_id', userId);
           }
         } catch (usageError) {
           console.error('Bulk usage tracking error:', usageError);
-          // Don't fail the URL creation if usage tracking fails
         }
       }
       
@@ -186,34 +184,37 @@ module.exports = async (req, res) => {
     // Update usage count for authenticated users
     if (userId) {
       try {
-        // First, ensure subscription exists
-        const { data: existingSub, error: selectError } = await supabase
+        // Use upsert to handle both create and update cases
+        const { error: upsertError } = await supabase
           .from('user_subscriptions')
-          .select('current_usage, monthly_limit')
-          .eq('user_id', userId)
-          .single();
-        
-        if (selectError && selectError.code === 'PGRST116') {
-          // Subscription doesn't exist, create it
-          await supabase
+          .upsert({
+            user_id: userId,
+            plan_type: 'free',
+            monthly_limit: 25,
+            current_usage: 1,
+            billing_cycle_start: new Date().toISOString().split('T')[0]
+          }, {
+            onConflict: 'user_id',
+            ignoreDuplicates: false
+          });
+
+        if (upsertError) {
+          // If upsert fails, try to update existing record
+          const { data: existing } = await supabase
             .from('user_subscriptions')
-            .insert([{ 
-              user_id: userId,
-              plan_type: 'free',
-              monthly_limit: 25,
-              current_usage: 1,
-              billing_cycle_start: new Date().toISOString().split('T')[0]
-            }]);
-        } else if (existingSub) {
-          // Update existing subscription
-          await supabase
-            .from('user_subscriptions')
-            .update({ current_usage: existingSub.current_usage + 1 })
-            .eq('user_id', userId);
+            .select('current_usage')
+            .eq('user_id', userId)
+            .single();
+
+          if (existing) {
+            await supabase
+              .from('user_subscriptions')
+              .update({ current_usage: existing.current_usage + 1 })
+              .eq('user_id', userId);
+          }
         }
       } catch (usageError) {
         console.error('Usage tracking error:', usageError);
-        // Don't fail the URL creation if usage tracking fails
       }
     }
 

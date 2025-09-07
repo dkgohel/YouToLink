@@ -12,6 +12,7 @@ import Pricing from './components/Pricing';
 import Blogs from './components/Blogs';
 import BlogPost from './components/BlogPost';
 import AdminBlogs from './components/AdminBlogs';
+import AdminDashboard from './components/AdminDashboard';
 import AdSenseLoader from './components/AdSenseLoader';
 
 function App() {
@@ -61,6 +62,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/pricing" element={<Pricing user={user} onLogout={handleLogout} />} />
+        <Route path="/admin" element={<AdminDashboard user={user} onLogout={handleLogout} />} />
       </Routes>
     </Router>
   );

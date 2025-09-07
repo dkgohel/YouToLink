@@ -44,6 +44,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout }) => {
       const statsResponse = await fetch('/api/admin?action=stats', {
         headers: {
           'x-user-id': user.id,
+          'x-user-email': user.email,
           'Authorization': `Bearer ${user.access_token || ''}`
         }
       });
@@ -57,6 +58,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout }) => {
       const usersResponse = await fetch('/api/admin?action=users', {
         headers: {
           'x-user-id': user.id,
+          'x-user-email': user.email,
           'Authorization': `Bearer ${user.access_token || ''}`
         }
       });
@@ -79,6 +81,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout }) => {
         headers: {
           'Content-Type': 'application/json',
           'x-user-id': user.id,
+          'x-user-email': user.email,
           'Authorization': `Bearer ${user.access_token || ''}`
         },
         body: JSON.stringify({
@@ -107,6 +110,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout }) => {
         headers: {
           'Content-Type': 'application/json',
           'x-user-id': user.id,
+          'x-user-email': user.email,
           'Authorization': `Bearer ${user.access_token || ''}`
         },
         body: JSON.stringify({

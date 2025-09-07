@@ -3,26 +3,24 @@ const { createClient } = require('@supabase/supabase-js');
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_ANON_KEY;
 
-// Admin user IDs (replace with your actual admin user IDs)
-const ADMIN_USERS = [
-  // Add your admin user IDs here
-  'your-admin-user-id-1',
-  'your-admin-user-id-2'
+// Admin user emails
+const ADMIN_EMAILS = [
+  'darshan.gohel619@gmail.com'
 ];
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,POST,PUT');
-  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization, x-user-id');
+  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization, x-user-id, x-user-email');
 
   if (req.method === 'OPTIONS') {
     res.status(200).end();
     return;
   }
 
-  const userId = req.headers['x-user-id'];
-  if (!userId || !ADMIN_USERS.includes(userId)) {
+  const userEmail = req.headers['x-user-email'];
+  if (!userEmail || !ADMIN_EMAILS.includes(userEmail)) {
     return res.status(403).json({ error: 'Admin access required' });
   }
 

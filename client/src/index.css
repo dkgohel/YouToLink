@@ -764,6 +764,11 @@ body {
   margin: 24px 0;
 }
 
+.ad-banner-small-dashboard {
+  max-height: 60px;
+  overflow: hidden;
+}
+
 .ad-container-result {
   background: rgba(40, 167, 69, 0.1);
   border: 1px solid rgba(40, 167, 69, 0.2);

@@ -81,8 +81,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
         {/* Dashboard Banner Ad */}
         <AdBanner 
           adSlot="1122334455"
-          className="ad-container-dashboard"
-          style={{ minHeight: '90px' }}
+          className="ad-container-dashboard ad-banner-small-dashboard"
         />
 
         {/* Subscription Info */}

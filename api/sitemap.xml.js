@@ -26,11 +26,5 @@ export default function handler(req, res) {
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-  <url>
-    <loc>https://u2l.in/dashboard</loc>
-    <lastmod>2025-09-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
 </urlset>`);
 }

@@ -79,10 +79,12 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
         </div>
 
         {/* Dashboard Banner Ad */}
+        {/*
         <AdBanner 
           adSlot="1122334455"
           className="ad-container-dashboard ad-banner-small-dashboard"
         />
+        */}
 
         {/* Subscription Info */}
         <Subscription user={user} />
